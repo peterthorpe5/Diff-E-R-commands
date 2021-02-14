@@ -1,0 +1,28 @@
+library(edgeR)
+library(DESeq2)
+
+data = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment/Gp_genes.counts.matrix", header=T, row.names=1, com='')
+col_ordering = c(3,4,13,14,15)
+rnaseqMatrix = data[,col_ordering]
+rnaseqMatrix = round(rnaseqMatrix)
+rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+conditions = data.frame(conditions=factor(c(rep("Gp_14DPI", 2), rep("Gp_J2", 3))))
+rownames(conditions) = colnames(rnaseqMatrix)
+ddsFullCountTable <- DESeqDataSetFromMatrix(
+    countData = rnaseqMatrix,
+    colData = conditions,
+    design = ~ conditions)
+dds = DESeq(ddsFullCountTable)
+contrast=c("conditions","Gp_14DPI","Gp_J2")
+res = results(dds, contrast)
+baseMeanA <- rowMeans(counts(dds, normalized=TRUE)[,colData(dds)$condition == "Gp_14DPI"])
+baseMeanB <- rowMeans(counts(dds, normalized=TRUE)[,colData(dds)$condition == "Gp_J2"])
+res = cbind(baseMeanA, baseMeanB, as.data.frame(res))
+res = cbind(sampleA="Gp_14DPI", sampleB="Gp_J2", as.data.frame(res))
+res$padj[is.na(res$padj)]  <- 1
+write.table(as.data.frame(res[order(res$pvalue),]), file='Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_J2.DESeq2.DE_results', sep='	', quote=FALSE)
+write.table(rnaseqMatrix, file='Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_J2.DESeq2.count_matrix', sep='	', quote=FALSE)
+source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.4.0/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+pdf("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_J2.DESeq2.DE_results.MA_n_Volcano.pdf")
+plot_MA_and_Volcano(log2(res$baseMean+1), res$log2FoldChange, res$padj)
+dev.off()

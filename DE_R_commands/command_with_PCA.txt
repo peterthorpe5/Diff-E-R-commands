@@ -1,0 +1,486 @@
+$VAR1 = {
+          'Blan_Tail_21' => [
+                              'Blan_Tail_J_21',
+                              'Blan_Tail_K_21',
+                              'Blan_Tail_L_21'
+                            ],
+          'Blan_Tail_14' => [
+                              'Blan_Tail_G_14',
+                              'Blan_Tail_H_14',
+                              'Blan_Tail_I_14'
+                            ],
+          'Blan_Tail_10' => [
+                              'Blan_Tail_D_10',
+                              'Blan_Tail_E_10',
+                              'Blan_Tail_F_10'
+                            ],
+          'Blan_Tail_7' => [
+                             'Blan_Tail_A_7',
+                             'Blan_Tail_B_7',
+                             'Blan_Tail_C_7'
+                           ]
+        };
+CMD: R --vanilla -q < Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.Blan_Tail_10_vs_Blan_Tail_14.Blan_Tail_10.vs.Blan_Tail_14.EdgeR.Rscript
+> library(edgeR)
+> 
+> data = read.table("/storage/home/users/pjt6/Amphioxus/fq/Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(5,6,7,8,9,10)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Blan_Tail_10", 3), rep("Blan_Tail_14", 3)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateCommonDisp(exp_study)
+> exp_study = estimateTagwiseDisp(exp_study)
+> et = exactTest(exp_study, pair=c("Blan_Tail_10", "Blan_Tail_14"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Blan_Tail_10", sampleB="Blan_Tail_14", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.Blan_Tail_10_vs_Blan_Tail_14.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.Blan_Tail_10_vs_Blan_Tail_14.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.4.0/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.Blan_Tail_10_vs_Blan_Tail_14.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --vanilla -q < Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.Blan_Tail_10_vs_Blan_Tail_21.Blan_Tail_10.vs.Blan_Tail_21.EdgeR.Rscript
+> library(edgeR)
+> 
+> data = read.table("/storage/home/users/pjt6/Amphioxus/fq/Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(5,6,7,11,2,12)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Blan_Tail_10", 3), rep("Blan_Tail_21", 3)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateCommonDisp(exp_study)
+> exp_study = estimateTagwiseDisp(exp_study)
+> et = exactTest(exp_study, pair=c("Blan_Tail_10", "Blan_Tail_21"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Blan_Tail_10", sampleB="Blan_Tail_21", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.Blan_Tail_10_vs_Blan_Tail_21.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.Blan_Tail_10_vs_Blan_Tail_21.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.4.0/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.Blan_Tail_10_vs_Blan_Tail_21.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --vanilla -q < Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.Blan_Tail_10_vs_Blan_Tail_7.Blan_Tail_10.vs.Blan_Tail_7.EdgeR.Rscript
+> library(edgeR)
+> 
+> data = read.table("/storage/home/users/pjt6/Amphioxus/fq/Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(5,6,7,3,4,1)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Blan_Tail_10", 3), rep("Blan_Tail_7", 3)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateCommonDisp(exp_study)
+> exp_study = estimateTagwiseDisp(exp_study)
+> et = exactTest(exp_study, pair=c("Blan_Tail_10", "Blan_Tail_7"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Blan_Tail_10", sampleB="Blan_Tail_7", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.Blan_Tail_10_vs_Blan_Tail_7.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.Blan_Tail_10_vs_Blan_Tail_7.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.4.0/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.Blan_Tail_10_vs_Blan_Tail_7.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --vanilla -q < Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.Blan_Tail_14_vs_Blan_Tail_21.Blan_Tail_14.vs.Blan_Tail_21.EdgeR.Rscript
+> library(edgeR)
+> 
+> data = read.table("/storage/home/users/pjt6/Amphioxus/fq/Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(8,9,10,11,2,12)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Blan_Tail_14", 3), rep("Blan_Tail_21", 3)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateCommonDisp(exp_study)
+> exp_study = estimateTagwiseDisp(exp_study)
+> et = exactTest(exp_study, pair=c("Blan_Tail_14", "Blan_Tail_21"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Blan_Tail_14", sampleB="Blan_Tail_21", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.Blan_Tail_14_vs_Blan_Tail_21.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.Blan_Tail_14_vs_Blan_Tail_21.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.4.0/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.Blan_Tail_14_vs_Blan_Tail_21.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --vanilla -q < Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.Blan_Tail_14_vs_Blan_Tail_7.Blan_Tail_14.vs.Blan_Tail_7.EdgeR.Rscript
+> library(edgeR)
+> 
+> data = read.table("/storage/home/users/pjt6/Amphioxus/fq/Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(8,9,10,3,4,1)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Blan_Tail_14", 3), rep("Blan_Tail_7", 3)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateCommonDisp(exp_study)
+> exp_study = estimateTagwiseDisp(exp_study)
+> et = exactTest(exp_study, pair=c("Blan_Tail_14", "Blan_Tail_7"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Blan_Tail_14", sampleB="Blan_Tail_7", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.Blan_Tail_14_vs_Blan_Tail_7.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.Blan_Tail_14_vs_Blan_Tail_7.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.4.0/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.Blan_Tail_14_vs_Blan_Tail_7.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --vanilla -q < Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.Blan_Tail_21_vs_Blan_Tail_7.Blan_Tail_21.vs.Blan_Tail_7.EdgeR.Rscript
+> library(edgeR)
+> 
+> data = read.table("/storage/home/users/pjt6/Amphioxus/fq/Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(11,2,12,3,4,1)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Blan_Tail_21", 3), rep("Blan_Tail_7", 3)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateCommonDisp(exp_study)
+> exp_study = estimateTagwiseDisp(exp_study)
+> et = exactTest(exp_study, pair=c("Blan_Tail_21", "Blan_Tail_7"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Blan_Tail_21", sampleB="Blan_Tail_7", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.Blan_Tail_21_vs_Blan_Tail_7.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.Blan_Tail_21_vs_Blan_Tail_7.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.4.0/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.Blan_Tail_21_vs_Blan_Tail_7.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+> library(cluster)
+> library(Biobase)
+> library(qvalue)
+> NO_REUSE = F
+> 
+> # try to reuse earlier-loaded data if possible
+> if (file.exists("Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.RData") && ! NO_REUSE) {
++     print('RESTORING DATA FROM EARLIER ANALYSIS')
++     load("Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.RData")
++ } else {
++     print('Reading matrix file.')
++     primary_data = read.table("Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix", header=T, com='', sep="\t", row.names=1, check.names=F)
++     primary_data = as.matrix(primary_data)
++ }
+[1] "Reading matrix file."
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.4.0/Analysis/DifferentialExpression/R/heatmap.3.R")
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.4.0/Analysis/DifferentialExpression/R/misc_rnaseq_funcs.R")
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.4.0/Analysis/DifferentialExpression/R/pairs3.R")
+> data = primary_data
+> samples_data = read.table("/storage/home/users/pjt6/Amphioxus/fq//samples_described.txt", header=F, check.names=F, fill=T)
+> samples_data = samples_data[samples_data[,2] != '',]
+> sample_types = as.character(unique(samples_data[,1]))
+> rep_names = as.character(samples_data[,2])
+> data = data[, colnames(data) %in% samples_data[,2], drop=F ]
+> nsamples = length(sample_types)
+> sample_colors = rainbow(nsamples)
+> names(sample_colors) = sample_types
+> sample_type_list = list()
+> for (i in 1:nsamples) {
++     samples_want = samples_data[samples_data[,1]==sample_types[i], 2]
++     sample_type_list[[sample_types[i]]] = as.vector(samples_want)
++ }
+> sample_factoring = colnames(data)
+> for (i in 1:nsamples) {
++     sample_type = sample_types[i]
++     replicates_want = sample_type_list[[sample_type]]
++     sample_factoring[ colnames(data) %in% replicates_want ] = sample_type
++ }
+> # reorder according to sample type.
+> tmp_sample_reordering = order(sample_factoring)
+> data = data[,tmp_sample_reordering,drop=F]
+> sample_factoring = sample_factoring[tmp_sample_reordering]
+> data = data[rowSums(data)>=10,]
+> initial_matrix = data # store before doing various data transformations
+> cs = colSums(data)
+> data = t( t(data)/cs) * 1e6;
+> data = log2(data+1)
+> sample_factoring = colnames(data)
+> for (i in 1:nsamples) {
++     sample_type = sample_types[i]
++     replicates_want = sample_type_list[[sample_type]]
++     sample_factoring[ colnames(data) %in% replicates_want ] = sample_type
++ }
+> sampleAnnotations = matrix(ncol=ncol(data),nrow=nsamples)
+> for (i in 1:nsamples) {
++   sampleAnnotations[i,] = colnames(data) %in% sample_type_list[[sample_types[i]]]
++ }
+> sampleAnnotations = apply(sampleAnnotations, 1:2, function(x) as.logical(x))
+> sampleAnnotations = sample_matrix_to_color_assignments(sampleAnnotations, col=sample_colors)
+> rownames(sampleAnnotations) = as.vector(sample_types)
+> colnames(sampleAnnotations) = colnames(data)
+> data = as.matrix(data) # convert to matrix
+> MA_plot = function(x, y, ...) {
++     M = log( (exp(x) + exp(y)) / 2)
++     A = x - y;
++     res = list(x=M, y=A)
++     return(res)
++ }
+> MA_color_fun = function(x,y) {
++     col = sapply(y, function(y) ifelse(abs(y) >= 1, 'red', 'black')) # color 2-fold diffs
++     return(col)
++ }
+> Scatter_color_fun = function(x,y) {
++     col = sapply(abs(x-y), function(z) ifelse(z >= 1, 'red', 'black')) # color 2-fold diffs
++     return(col)
++ }
+> for (i in 1:nsamples) {
++     sample_name = sample_types[[i]]
++     cat('Processing replicate QC analysis for sample: ', sample_name, "
++ ")
++     samples_want = sample_type_list[[sample_name]]
++     samples_want = colnames(data) %in% samples_want
++     if (sum(samples_want) > 1) {
++         pdf(file=paste(sample_name, '.rep_compare.pdf', sep=''))
++         d = data[,samples_want]
++         initial_matrix_samples_want = initial_matrix[,samples_want]
++         op <- par(mar = c(10,10,10,10))
++         barplot(colSums(initial_matrix_samples_want), las=2, main=paste("Sum of Frags for replicates of:", sample_name), ylab='', cex.names=0.7)
++         par(op)
++         pairs3(d, pch='.', CustomColorFun=Scatter_color_fun, main=paste('Replicate Scatter:', sample_name)) # scatter plots
++         pairs3(d, XY_convert_fun=MA_plot, CustomColorFun=MA_color_fun, pch='.', main=paste('Replicate MA:', sample_name)); # MA plots
++         reps_cor = cor(d, method="pearson", use='pairwise.complete.obs')
++         hc_samples = hclust(as.dist(1-reps_cor), method="complete")
++         heatmap.3(reps_cor, dendrogram='both', Rowv=as.dendrogram(hc_samples), Colv=as.dendrogram(hc_samples), col = cm.colors(256), scale='none', symm=TRUE, key=TRUE,density.info='none', trace='none', symbreaks=F, margins=c(10,10), cexCol=1, cexRow=1, main=paste('Replicate Correlations:', sample_name) )
++         dev.off()
++     }
++ }
+Processing replicate QC analysis for sample:  Blan_Tail_7 
+Processing replicate QC analysis for sample:  Blan_Tail_10 
+Processing replicate QC analysis for sample:  Blan_Tail_14 
+Processing replicate QC analysis for sample:  Blan_Tail_21 
+> write.table(data, file="Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.minRow10.CPM.log2.dat", quote=F, sep='	');
+> gene_cor = NULL
+> 
+> library(cluster)
+> library(Biobase)
+> library(qvalue)
+> NO_REUSE = F
+> 
+> # try to reuse earlier-loaded data if possible
+> if (file.exists("Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.RData") && ! NO_REUSE) {
++     print('RESTORING DATA FROM EARLIER ANALYSIS')
++     load("Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.RData")
++ } else {
++     print('Reading matrix file.')
++     primary_data = read.table("Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix", header=T, com='', sep="\t", row.names=1, check.names=F)
++     primary_data = as.matrix(primary_data)
++ }
+[1] "Reading matrix file."
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.4.0/Analysis/DifferentialExpression/R/heatmap.3.R")
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.4.0/Analysis/DifferentialExpression/R/misc_rnaseq_funcs.R")
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.4.0/Analysis/DifferentialExpression/R/pairs3.R")
+> data = primary_data
+> samples_data = read.table("/storage/home/users/pjt6/Amphioxus/fq//samples_described.txt", header=F, check.names=F, fill=T)
+> samples_data = samples_data[samples_data[,2] != '',]
+> sample_types = as.character(unique(samples_data[,1]))
+> rep_names = as.character(samples_data[,2])
+> data = data[, colnames(data) %in% samples_data[,2], drop=F ]
+> nsamples = length(sample_types)
+> sample_colors = rainbow(nsamples)
+> names(sample_colors) = sample_types
+> sample_type_list = list()
+> for (i in 1:nsamples) {
++     samples_want = samples_data[samples_data[,1]==sample_types[i], 2]
++     sample_type_list[[sample_types[i]]] = as.vector(samples_want)
++ }
+> sample_factoring = colnames(data)
+> for (i in 1:nsamples) {
++     sample_type = sample_types[i]
++     replicates_want = sample_type_list[[sample_type]]
++     sample_factoring[ colnames(data) %in% replicates_want ] = sample_type
++ }
+> # reorder according to sample type.
+> tmp_sample_reordering = order(sample_factoring)
+> data = data[,tmp_sample_reordering,drop=F]
+> sample_factoring = sample_factoring[tmp_sample_reordering]
+> data = data[rowSums(data)>=2,]
+> initial_matrix = data # store before doing various data transformations
+> cs = colSums(data)
+> data = t( t(data)/cs) * 1e6;
+> data = log2(data+1)
+> sample_factoring = colnames(data)
+> for (i in 1:nsamples) {
++     sample_type = sample_types[i]
++     replicates_want = sample_type_list[[sample_type]]
++     sample_factoring[ colnames(data) %in% replicates_want ] = sample_type
++ }
+> sampleAnnotations = matrix(ncol=ncol(data),nrow=nsamples)
+> for (i in 1:nsamples) {
++   sampleAnnotations[i,] = colnames(data) %in% sample_type_list[[sample_types[i]]]
++ }
+> sampleAnnotations = apply(sampleAnnotations, 1:2, function(x) as.logical(x))
+> sampleAnnotations = sample_matrix_to_color_assignments(sampleAnnotations, col=sample_colors)
+> rownames(sampleAnnotations) = as.vector(sample_types)
+> colnames(sampleAnnotations) = colnames(data)
+> data = as.matrix(data) # convert to matrix
+> write.table(data, file="Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.minRow2.CPM.log2.dat", quote=F, sep='	');
+> if (nrow(data) < 2) { stop("
++ 
++ **** Sorry, at least two rows are required for this matrix.
++ 
++ ");}
+> if (ncol(data) < 2) { stop("
++ 
++ **** Sorry, at least two columns are required for this matrix.
++ 
++ ");}
+> sample_cor = cor(data, method='pearson', use='pairwise.complete.obs')
+> write.table(sample_cor, file="Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.minRow2.CPM.log2.sample_cor.dat", quote=F, sep='	')
+> sample_dist = as.dist(1-sample_cor)
+> hc_samples = hclust(sample_dist, method='complete')
+> pdf("Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.minRow2.CPM.log2.sample_cor_matrix.pdf")
+> sample_cor_for_plot = sample_cor
+> heatmap.3(sample_cor_for_plot, dendrogram='both', Rowv=as.dendrogram(hc_samples), Colv=as.dendrogram(hc_samples), col = greenred(75), scale='none', symm=TRUE, key=TRUE,density.info='none', trace='none', symkey=FALSE, symbreaks=F, margins=c(10,10), cexCol=1, cexRow=1, cex.main=0.75, main=paste("sample correlation matrix
++ ", "Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.minRow2.CPM.log2") , ColSideColors=sampleAnnotations, RowSideColors=t(sampleAnnotations))
+> dev.off()
+null device 
+          1 
+> gene_cor = NULL
+> 
+> library(cluster)
+> library(Biobase)
+> library(qvalue)
+> NO_REUSE = F
+> 
+> # try to reuse earlier-loaded data if possible
+> if (file.exists("Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.RData") && ! NO_REUSE) {
++     print('RESTORING DATA FROM EARLIER ANALYSIS')
++     load("Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.RData")
++ } else {
++     print('Reading matrix file.')
++     primary_data = read.table("Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix", header=T, com='', sep="\t", row.names=1, check.names=F)
++     primary_data = as.matrix(primary_data)
++ }
+[1] "Reading matrix file."
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.4.0/Analysis/DifferentialExpression/R/heatmap.3.R")
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.4.0/Analysis/DifferentialExpression/R/misc_rnaseq_funcs.R")
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.4.0/Analysis/DifferentialExpression/R/pairs3.R")
+> data = primary_data
+> samples_data = read.table("/storage/home/users/pjt6/Amphioxus/fq//samples_described.txt", header=F, check.names=F, fill=T)
+> samples_data = samples_data[samples_data[,2] != '',]
+> sample_types = as.character(unique(samples_data[,1]))
+> rep_names = as.character(samples_data[,2])
+> data = data[, colnames(data) %in% samples_data[,2], drop=F ]
+> nsamples = length(sample_types)
+> sample_colors = rainbow(nsamples)
+> names(sample_colors) = sample_types
+> sample_type_list = list()
+> for (i in 1:nsamples) {
++     samples_want = samples_data[samples_data[,1]==sample_types[i], 2]
++     sample_type_list[[sample_types[i]]] = as.vector(samples_want)
++ }
+> sample_factoring = colnames(data)
+> for (i in 1:nsamples) {
++     sample_type = sample_types[i]
++     replicates_want = sample_type_list[[sample_type]]
++     sample_factoring[ colnames(data) %in% replicates_want ] = sample_type
++ }
+> # reorder according to sample type.
+> tmp_sample_reordering = order(sample_factoring)
+> data = data[,tmp_sample_reordering,drop=F]
+> sample_factoring = sample_factoring[tmp_sample_reordering]
+> data = data[rowSums(data)>=10,]
+> initial_matrix = data # store before doing various data transformations
+> cs = colSums(data)
+> data = t( t(data)/cs) * 1e6;
+> data = log2(data+1)
+> sample_factoring = colnames(data)
+> for (i in 1:nsamples) {
++     sample_type = sample_types[i]
++     replicates_want = sample_type_list[[sample_type]]
++     sample_factoring[ colnames(data) %in% replicates_want ] = sample_type
++ }
+> sampleAnnotations = matrix(ncol=ncol(data),nrow=nsamples)
+> for (i in 1:nsamples) {
++   sampleAnnotations[i,] = colnames(data) %in% sample_type_list[[sample_types[i]]]
++ }
+> sampleAnnotations = apply(sampleAnnotations, 1:2, function(x) as.logical(x))
+> sampleAnnotations = sample_matrix_to_color_assignments(sampleAnnotations, col=sample_colors)
+> rownames(sampleAnnotations) = as.vector(sample_types)
+> colnames(sampleAnnotations) = colnames(data)
+> data = as.matrix(data) # convert to matrix
+> write.table(data, file="Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.minRow10.CPM.log2.dat", quote=F, sep='	');
+> pdf("Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.minRow10.CPM.log2.principal_components.pdf")
+> data = as.matrix(data)
+> # Z-scale and center the genes across all the samples for PCA
+> prin_comp_data = initial_matrix
+> prin_comp_data = log2(prin_comp_data+1)
+> prin_comp_data = scale(prin_comp_data)
+> prin_comp_data = t(scale(t(prin_comp_data), center=TRUE, scale=F)) # just center trans expr level, retain original effect size.
+> pca = prcomp(t(prin_comp_data), center = FALSE, scale. = FALSE)
+> pc_pct_variance = (pca$sdev^2)/sum(pca$sdev^2)
+> def.par <- par(no.readonly = TRUE) # save default, for resetting...
+> gridlayout = matrix(c(1:4),nrow=2,ncol=2, byrow=TRUE);
+> layout(gridlayout, widths=c(1,1));
+> write.table(pca$rotation, file="Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.minRow10.CPM.log2.PCA.loadings", quote=F, sep="	")
+> write.table(pca$x, file="Branchiostoma_lanceolatum.BraLan2.cds.all.fa.genes.counts.matrix.isoform.counts.matrix.minRow10.CPM.log2.PCA.scores", quote=F, sep="	")
+> for (i in 1:(max(3,2)-1)) {
++     xrange = range(pca$x[,i])
++     yrange = range(pca$x[,i+1])
++     samples_want = rownames(pca$x) %in% sample_type_list[[sample_types[1]]]
++     pc_i_pct_var = sprintf("(%.2f%%)", pc_pct_variance[i]*100)
++     pc_i_1_pct_var = sprintf("(%.2f%%)", pc_pct_variance[i+1]*100)
++     plot(pca$x[samples_want,i], pca$x[samples_want,i+1], xlab=paste('PC',i, pc_i_pct_var), ylab=paste('PC',i+1, pc_i_1_pct_var), xlim=xrange, ylim=yrange, col=sample_colors[1])
++     for (j in 2:nsamples) {
++         samples_want = rownames(pca$x) %in% sample_type_list[[sample_types[j]]]
++         points(pca$x[samples_want,i], pca$x[samples_want,i+1], col=sample_colors[j], pch=j)
++     }
++     plot.new()
++     legend('topleft', as.vector(sample_types), col=sample_colors, pch=1:nsamples, ncol=2)
++ }
+> 
+> par(def.par)
+> pcscore_mat_vals = pca$rotation[,1:3]
+> pcscore_mat = matrix_to_color_assignments(pcscore_mat_vals, col=colorpanel(256,'purple','black','yellow'), by='row')
+> colnames(pcscore_mat) = paste('PC', 1:ncol(pcscore_mat))
+> dev.off()
+null device 
+          1 
+> gene_cor = NULL
+> 
+/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.4.0/Analysis/DifferentialExpression//analyze_diff_expr.pl --examine_GO_enrichment --gene_lengths /storage/home/users/pjt6/Amphioxus/fq//gene_len_GO.txt --GO_annots /storage/home/users/pjt6/Amphioxus/fq//GO.txt --order_columns_by_samples_file --matrix ../*.isoform.counts.matrix.TMM_normalized.FPKM -P 0.05 -C 2 --max_DE_genes_per_comparison 50000 --samples /storage/home/users/pjt6/Amphioxus/fq//samples_described.txt
+
+/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.4.0/Analysis/DifferentialExpression//analyze_diff_expr.pl  --order_columns_by_samples_file --matrix ../*.isoform.counts.matrix.TMM_normalized.FPKM -P 0.05 -C 2 --max_genes_clust 50000 --samples /storage/home/users/pjt6/Amphioxus/fq//samples_described.txt
+
+/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.4.0/Analysis/DifferentialExpression/analyze_diff_expr.pl  --order_columns_by_samples_file  --matrix ../*genes.counts.matrix.TMM_normalized.FPKM -P 0.05 -C 2 --max_genes_clust 50000 --samples ../samples_described.txt

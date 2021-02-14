@@ -1,0 +1,2495 @@
+$VAR1 = {
+          'Gp_J2' => [
+                       'Gp_J2_rep1',
+                       'Gp_J2_rep2',
+                       'Gp_J2_rep3'
+                     ],
+          'Gp_MALE' => [
+                         'Gp_MALE_rep1',
+                         'Gp_MALE_rep2'
+                       ],
+          'Gp_35DPI' => [
+                          'Gp_35DPI_rep1',
+                          'Gp_35DPI_rep2'
+                        ],
+          'Gp_7DPI' => [
+                         'Gp_7DPI_rep1',
+                         'Gp_7DPI_rep2'
+                       ],
+          'Gp_28DPI' => [
+                          'Gp_28DPI_rep1',
+                          'Gp_28DPI_rep2'
+                        ],
+          'Gp_EGG' => [
+                        'Gp_EGG_rep1',
+                        'Gp_EGG_rep2'
+                      ],
+          'Gp_14DPI' => [
+                          'Gp_14DPI_rep1',
+                          'Gp_14DPI_rep2'
+                        ],
+          'Gp_21DPI' => [
+                          'Gp_21DPI_rep1',
+                          'Gp_21DPI_rep2'
+                        ]
+        };
+CMD: R --no-save --no-restore --no-site-file --no-init-file -q < Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_21DPI.Gp_14DPI.vs.Gp_21DPI.EdgeR.Rscript
+> if (! require(edgeR)) {
++    source("https://bioconductor.org/biocLite.R")
++    biocLite("edgeR")
++    library(edgeR)
++ }
+> 
+> data = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment/Gp_genes.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(3,4,5,6)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Gp_14DPI", 2), rep("Gp_21DPI", 2)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateDisp(exp_study)
+Design matrix not provided. Switch to the classic mode.
+> et = exactTest(exp_study, pair=c("Gp_14DPI", "Gp_21DPI"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Gp_14DPI", sampleB="Gp_21DPI", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_21DPI.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_21DPI.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.8.4/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_21DPI.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(rownames(result_table), result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --no-save --no-restore --no-site-file --no-init-file -q < Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_28DPI.Gp_14DPI.vs.Gp_28DPI.EdgeR.Rscript
+> if (! require(edgeR)) {
++    source("https://bioconductor.org/biocLite.R")
++    biocLite("edgeR")
++    library(edgeR)
++ }
+> 
+> data = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment/Gp_genes.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(3,4,7,8)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Gp_14DPI", 2), rep("Gp_28DPI", 2)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateDisp(exp_study)
+Design matrix not provided. Switch to the classic mode.
+> et = exactTest(exp_study, pair=c("Gp_14DPI", "Gp_28DPI"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Gp_14DPI", sampleB="Gp_28DPI", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_28DPI.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_28DPI.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.8.4/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_28DPI.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(rownames(result_table), result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --no-save --no-restore --no-site-file --no-init-file -q < Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_35DPI.Gp_14DPI.vs.Gp_35DPI.EdgeR.Rscript
+> if (! require(edgeR)) {
++    source("https://bioconductor.org/biocLite.R")
++    biocLite("edgeR")
++    library(edgeR)
++ }
+> 
+> data = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment/Gp_genes.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(3,4,9,10)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Gp_14DPI", 2), rep("Gp_35DPI", 2)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateDisp(exp_study)
+Design matrix not provided. Switch to the classic mode.
+> et = exactTest(exp_study, pair=c("Gp_14DPI", "Gp_35DPI"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Gp_14DPI", sampleB="Gp_35DPI", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_35DPI.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_35DPI.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.8.4/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_35DPI.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(rownames(result_table), result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --no-save --no-restore --no-site-file --no-init-file -q < Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_7DPI.Gp_14DPI.vs.Gp_7DPI.EdgeR.Rscript
+> if (! require(edgeR)) {
++    source("https://bioconductor.org/biocLite.R")
++    biocLite("edgeR")
++    library(edgeR)
++ }
+> 
+> data = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment/Gp_genes.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(3,4,1,2)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Gp_14DPI", 2), rep("Gp_7DPI", 2)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateDisp(exp_study)
+Design matrix not provided. Switch to the classic mode.
+> et = exactTest(exp_study, pair=c("Gp_14DPI", "Gp_7DPI"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Gp_14DPI", sampleB="Gp_7DPI", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_7DPI.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_7DPI.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.8.4/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_7DPI.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(rownames(result_table), result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --no-save --no-restore --no-site-file --no-init-file -q < Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_EGG.Gp_14DPI.vs.Gp_EGG.EdgeR.Rscript
+> if (! require(edgeR)) {
++    source("https://bioconductor.org/biocLite.R")
++    biocLite("edgeR")
++    library(edgeR)
++ }
+> 
+> data = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment/Gp_genes.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(3,4,11,12)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Gp_14DPI", 2), rep("Gp_EGG", 2)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateDisp(exp_study)
+Design matrix not provided. Switch to the classic mode.
+> et = exactTest(exp_study, pair=c("Gp_14DPI", "Gp_EGG"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Gp_14DPI", sampleB="Gp_EGG", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_EGG.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_EGG.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.8.4/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_EGG.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(rownames(result_table), result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --no-save --no-restore --no-site-file --no-init-file -q < Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_J2.Gp_14DPI.vs.Gp_J2.EdgeR.Rscript
+> if (! require(edgeR)) {
++    source("https://bioconductor.org/biocLite.R")
++    biocLite("edgeR")
++    library(edgeR)
++ }
+> 
+> data = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment/Gp_genes.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(3,4,13,14,15)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Gp_14DPI", 2), rep("Gp_J2", 3)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateDisp(exp_study)
+Design matrix not provided. Switch to the classic mode.
+> et = exactTest(exp_study, pair=c("Gp_14DPI", "Gp_J2"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Gp_14DPI", sampleB="Gp_J2", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_J2.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_J2.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.8.4/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_J2.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(rownames(result_table), result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --no-save --no-restore --no-site-file --no-init-file -q < Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_MALE.Gp_14DPI.vs.Gp_MALE.EdgeR.Rscript
+> if (! require(edgeR)) {
++    source("https://bioconductor.org/biocLite.R")
++    biocLite("edgeR")
++    library(edgeR)
++ }
+> 
+> data = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment/Gp_genes.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(3,4,16,17)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Gp_14DPI", 2), rep("Gp_MALE", 2)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateDisp(exp_study)
+Design matrix not provided. Switch to the classic mode.
+> et = exactTest(exp_study, pair=c("Gp_14DPI", "Gp_MALE"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Gp_14DPI", sampleB="Gp_MALE", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_MALE.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_MALE.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.8.4/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_MALE.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(rownames(result_table), result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --no-save --no-restore --no-site-file --no-init-file -q < Gp_genes.counts.matrix.Gp_21DPI_vs_Gp_28DPI.Gp_21DPI.vs.Gp_28DPI.EdgeR.Rscript
+> if (! require(edgeR)) {
++    source("https://bioconductor.org/biocLite.R")
++    biocLite("edgeR")
++    library(edgeR)
++ }
+> 
+> data = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment/Gp_genes.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(5,6,7,8)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Gp_21DPI", 2), rep("Gp_28DPI", 2)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateDisp(exp_study)
+Design matrix not provided. Switch to the classic mode.
+> et = exactTest(exp_study, pair=c("Gp_21DPI", "Gp_28DPI"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Gp_21DPI", sampleB="Gp_28DPI", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Gp_genes.counts.matrix.Gp_21DPI_vs_Gp_28DPI.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Gp_genes.counts.matrix.Gp_21DPI_vs_Gp_28DPI.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.8.4/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Gp_genes.counts.matrix.Gp_21DPI_vs_Gp_28DPI.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(rownames(result_table), result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --no-save --no-restore --no-site-file --no-init-file -q < Gp_genes.counts.matrix.Gp_21DPI_vs_Gp_35DPI.Gp_21DPI.vs.Gp_35DPI.EdgeR.Rscript
+> if (! require(edgeR)) {
++    source("https://bioconductor.org/biocLite.R")
++    biocLite("edgeR")
++    library(edgeR)
++ }
+> 
+> data = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment/Gp_genes.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(5,6,9,10)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Gp_21DPI", 2), rep("Gp_35DPI", 2)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateDisp(exp_study)
+Design matrix not provided. Switch to the classic mode.
+> et = exactTest(exp_study, pair=c("Gp_21DPI", "Gp_35DPI"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Gp_21DPI", sampleB="Gp_35DPI", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Gp_genes.counts.matrix.Gp_21DPI_vs_Gp_35DPI.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Gp_genes.counts.matrix.Gp_21DPI_vs_Gp_35DPI.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.8.4/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Gp_genes.counts.matrix.Gp_21DPI_vs_Gp_35DPI.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(rownames(result_table), result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --no-save --no-restore --no-site-file --no-init-file -q < Gp_genes.counts.matrix.Gp_21DPI_vs_Gp_7DPI.Gp_21DPI.vs.Gp_7DPI.EdgeR.Rscript
+> if (! require(edgeR)) {
++    source("https://bioconductor.org/biocLite.R")
++    biocLite("edgeR")
++    library(edgeR)
++ }
+> 
+> data = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment/Gp_genes.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(5,6,1,2)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Gp_21DPI", 2), rep("Gp_7DPI", 2)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateDisp(exp_study)
+Design matrix not provided. Switch to the classic mode.
+> et = exactTest(exp_study, pair=c("Gp_21DPI", "Gp_7DPI"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Gp_21DPI", sampleB="Gp_7DPI", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Gp_genes.counts.matrix.Gp_21DPI_vs_Gp_7DPI.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Gp_genes.counts.matrix.Gp_21DPI_vs_Gp_7DPI.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.8.4/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Gp_genes.counts.matrix.Gp_21DPI_vs_Gp_7DPI.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(rownames(result_table), result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --no-save --no-restore --no-site-file --no-init-file -q < Gp_genes.counts.matrix.Gp_21DPI_vs_Gp_EGG.Gp_21DPI.vs.Gp_EGG.EdgeR.Rscript
+> if (! require(edgeR)) {
++    source("https://bioconductor.org/biocLite.R")
++    biocLite("edgeR")
++    library(edgeR)
++ }
+> 
+> data = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment/Gp_genes.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(5,6,11,12)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Gp_21DPI", 2), rep("Gp_EGG", 2)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateDisp(exp_study)
+Design matrix not provided. Switch to the classic mode.
+> et = exactTest(exp_study, pair=c("Gp_21DPI", "Gp_EGG"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Gp_21DPI", sampleB="Gp_EGG", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Gp_genes.counts.matrix.Gp_21DPI_vs_Gp_EGG.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Gp_genes.counts.matrix.Gp_21DPI_vs_Gp_EGG.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.8.4/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Gp_genes.counts.matrix.Gp_21DPI_vs_Gp_EGG.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(rownames(result_table), result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --no-save --no-restore --no-site-file --no-init-file -q < Gp_genes.counts.matrix.Gp_21DPI_vs_Gp_J2.Gp_21DPI.vs.Gp_J2.EdgeR.Rscript
+> if (! require(edgeR)) {
++    source("https://bioconductor.org/biocLite.R")
++    biocLite("edgeR")
++    library(edgeR)
++ }
+> 
+> data = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment/Gp_genes.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(5,6,13,14,15)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Gp_21DPI", 2), rep("Gp_J2", 3)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateDisp(exp_study)
+Design matrix not provided. Switch to the classic mode.
+> et = exactTest(exp_study, pair=c("Gp_21DPI", "Gp_J2"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Gp_21DPI", sampleB="Gp_J2", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Gp_genes.counts.matrix.Gp_21DPI_vs_Gp_J2.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Gp_genes.counts.matrix.Gp_21DPI_vs_Gp_J2.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.8.4/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Gp_genes.counts.matrix.Gp_21DPI_vs_Gp_J2.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(rownames(result_table), result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --no-save --no-restore --no-site-file --no-init-file -q < Gp_genes.counts.matrix.Gp_21DPI_vs_Gp_MALE.Gp_21DPI.vs.Gp_MALE.EdgeR.Rscript
+> if (! require(edgeR)) {
++    source("https://bioconductor.org/biocLite.R")
++    biocLite("edgeR")
++    library(edgeR)
++ }
+> 
+> data = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment/Gp_genes.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(5,6,16,17)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Gp_21DPI", 2), rep("Gp_MALE", 2)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateDisp(exp_study)
+Design matrix not provided. Switch to the classic mode.
+> et = exactTest(exp_study, pair=c("Gp_21DPI", "Gp_MALE"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Gp_21DPI", sampleB="Gp_MALE", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Gp_genes.counts.matrix.Gp_21DPI_vs_Gp_MALE.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Gp_genes.counts.matrix.Gp_21DPI_vs_Gp_MALE.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.8.4/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Gp_genes.counts.matrix.Gp_21DPI_vs_Gp_MALE.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(rownames(result_table), result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --no-save --no-restore --no-site-file --no-init-file -q < Gp_genes.counts.matrix.Gp_28DPI_vs_Gp_35DPI.Gp_28DPI.vs.Gp_35DPI.EdgeR.Rscript
+> if (! require(edgeR)) {
++    source("https://bioconductor.org/biocLite.R")
++    biocLite("edgeR")
++    library(edgeR)
++ }
+> 
+> data = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment/Gp_genes.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(7,8,9,10)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Gp_28DPI", 2), rep("Gp_35DPI", 2)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateDisp(exp_study)
+Design matrix not provided. Switch to the classic mode.
+> et = exactTest(exp_study, pair=c("Gp_28DPI", "Gp_35DPI"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Gp_28DPI", sampleB="Gp_35DPI", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Gp_genes.counts.matrix.Gp_28DPI_vs_Gp_35DPI.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Gp_genes.counts.matrix.Gp_28DPI_vs_Gp_35DPI.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.8.4/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Gp_genes.counts.matrix.Gp_28DPI_vs_Gp_35DPI.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(rownames(result_table), result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --no-save --no-restore --no-site-file --no-init-file -q < Gp_genes.counts.matrix.Gp_28DPI_vs_Gp_7DPI.Gp_28DPI.vs.Gp_7DPI.EdgeR.Rscript
+> if (! require(edgeR)) {
++    source("https://bioconductor.org/biocLite.R")
++    biocLite("edgeR")
++    library(edgeR)
++ }
+> 
+> data = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment/Gp_genes.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(7,8,1,2)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Gp_28DPI", 2), rep("Gp_7DPI", 2)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateDisp(exp_study)
+Design matrix not provided. Switch to the classic mode.
+> et = exactTest(exp_study, pair=c("Gp_28DPI", "Gp_7DPI"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Gp_28DPI", sampleB="Gp_7DPI", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Gp_genes.counts.matrix.Gp_28DPI_vs_Gp_7DPI.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Gp_genes.counts.matrix.Gp_28DPI_vs_Gp_7DPI.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.8.4/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Gp_genes.counts.matrix.Gp_28DPI_vs_Gp_7DPI.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(rownames(result_table), result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --no-save --no-restore --no-site-file --no-init-file -q < Gp_genes.counts.matrix.Gp_28DPI_vs_Gp_EGG.Gp_28DPI.vs.Gp_EGG.EdgeR.Rscript
+> if (! require(edgeR)) {
++    source("https://bioconductor.org/biocLite.R")
++    biocLite("edgeR")
++    library(edgeR)
++ }
+> 
+> data = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment/Gp_genes.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(7,8,11,12)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Gp_28DPI", 2), rep("Gp_EGG", 2)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateDisp(exp_study)
+Design matrix not provided. Switch to the classic mode.
+> et = exactTest(exp_study, pair=c("Gp_28DPI", "Gp_EGG"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Gp_28DPI", sampleB="Gp_EGG", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Gp_genes.counts.matrix.Gp_28DPI_vs_Gp_EGG.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Gp_genes.counts.matrix.Gp_28DPI_vs_Gp_EGG.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.8.4/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Gp_genes.counts.matrix.Gp_28DPI_vs_Gp_EGG.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(rownames(result_table), result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --no-save --no-restore --no-site-file --no-init-file -q < Gp_genes.counts.matrix.Gp_28DPI_vs_Gp_J2.Gp_28DPI.vs.Gp_J2.EdgeR.Rscript
+> if (! require(edgeR)) {
++    source("https://bioconductor.org/biocLite.R")
++    biocLite("edgeR")
++    library(edgeR)
++ }
+> 
+> data = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment/Gp_genes.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(7,8,13,14,15)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Gp_28DPI", 2), rep("Gp_J2", 3)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateDisp(exp_study)
+Design matrix not provided. Switch to the classic mode.
+> et = exactTest(exp_study, pair=c("Gp_28DPI", "Gp_J2"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Gp_28DPI", sampleB="Gp_J2", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Gp_genes.counts.matrix.Gp_28DPI_vs_Gp_J2.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Gp_genes.counts.matrix.Gp_28DPI_vs_Gp_J2.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.8.4/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Gp_genes.counts.matrix.Gp_28DPI_vs_Gp_J2.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(rownames(result_table), result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --no-save --no-restore --no-site-file --no-init-file -q < Gp_genes.counts.matrix.Gp_28DPI_vs_Gp_MALE.Gp_28DPI.vs.Gp_MALE.EdgeR.Rscript
+> if (! require(edgeR)) {
++    source("https://bioconductor.org/biocLite.R")
++    biocLite("edgeR")
++    library(edgeR)
++ }
+> 
+> data = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment/Gp_genes.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(7,8,16,17)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Gp_28DPI", 2), rep("Gp_MALE", 2)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateDisp(exp_study)
+Design matrix not provided. Switch to the classic mode.
+> et = exactTest(exp_study, pair=c("Gp_28DPI", "Gp_MALE"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Gp_28DPI", sampleB="Gp_MALE", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Gp_genes.counts.matrix.Gp_28DPI_vs_Gp_MALE.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Gp_genes.counts.matrix.Gp_28DPI_vs_Gp_MALE.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.8.4/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Gp_genes.counts.matrix.Gp_28DPI_vs_Gp_MALE.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(rownames(result_table), result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --no-save --no-restore --no-site-file --no-init-file -q < Gp_genes.counts.matrix.Gp_35DPI_vs_Gp_7DPI.Gp_35DPI.vs.Gp_7DPI.EdgeR.Rscript
+> if (! require(edgeR)) {
++    source("https://bioconductor.org/biocLite.R")
++    biocLite("edgeR")
++    library(edgeR)
++ }
+> 
+> data = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment/Gp_genes.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(9,10,1,2)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Gp_35DPI", 2), rep("Gp_7DPI", 2)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateDisp(exp_study)
+Design matrix not provided. Switch to the classic mode.
+> et = exactTest(exp_study, pair=c("Gp_35DPI", "Gp_7DPI"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Gp_35DPI", sampleB="Gp_7DPI", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Gp_genes.counts.matrix.Gp_35DPI_vs_Gp_7DPI.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Gp_genes.counts.matrix.Gp_35DPI_vs_Gp_7DPI.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.8.4/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Gp_genes.counts.matrix.Gp_35DPI_vs_Gp_7DPI.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(rownames(result_table), result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --no-save --no-restore --no-site-file --no-init-file -q < Gp_genes.counts.matrix.Gp_35DPI_vs_Gp_EGG.Gp_35DPI.vs.Gp_EGG.EdgeR.Rscript
+> if (! require(edgeR)) {
++    source("https://bioconductor.org/biocLite.R")
++    biocLite("edgeR")
++    library(edgeR)
++ }
+> 
+> data = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment/Gp_genes.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(9,10,11,12)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Gp_35DPI", 2), rep("Gp_EGG", 2)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateDisp(exp_study)
+Design matrix not provided. Switch to the classic mode.
+> et = exactTest(exp_study, pair=c("Gp_35DPI", "Gp_EGG"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Gp_35DPI", sampleB="Gp_EGG", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Gp_genes.counts.matrix.Gp_35DPI_vs_Gp_EGG.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Gp_genes.counts.matrix.Gp_35DPI_vs_Gp_EGG.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.8.4/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Gp_genes.counts.matrix.Gp_35DPI_vs_Gp_EGG.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(rownames(result_table), result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --no-save --no-restore --no-site-file --no-init-file -q < Gp_genes.counts.matrix.Gp_35DPI_vs_Gp_J2.Gp_35DPI.vs.Gp_J2.EdgeR.Rscript
+> if (! require(edgeR)) {
++    source("https://bioconductor.org/biocLite.R")
++    biocLite("edgeR")
++    library(edgeR)
++ }
+> 
+> data = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment/Gp_genes.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(9,10,13,14,15)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Gp_35DPI", 2), rep("Gp_J2", 3)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateDisp(exp_study)
+Design matrix not provided. Switch to the classic mode.
+> et = exactTest(exp_study, pair=c("Gp_35DPI", "Gp_J2"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Gp_35DPI", sampleB="Gp_J2", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Gp_genes.counts.matrix.Gp_35DPI_vs_Gp_J2.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Gp_genes.counts.matrix.Gp_35DPI_vs_Gp_J2.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.8.4/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Gp_genes.counts.matrix.Gp_35DPI_vs_Gp_J2.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(rownames(result_table), result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --no-save --no-restore --no-site-file --no-init-file -q < Gp_genes.counts.matrix.Gp_35DPI_vs_Gp_MALE.Gp_35DPI.vs.Gp_MALE.EdgeR.Rscript
+> if (! require(edgeR)) {
++    source("https://bioconductor.org/biocLite.R")
++    biocLite("edgeR")
++    library(edgeR)
++ }
+> 
+> data = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment/Gp_genes.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(9,10,16,17)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Gp_35DPI", 2), rep("Gp_MALE", 2)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateDisp(exp_study)
+Design matrix not provided. Switch to the classic mode.
+> et = exactTest(exp_study, pair=c("Gp_35DPI", "Gp_MALE"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Gp_35DPI", sampleB="Gp_MALE", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Gp_genes.counts.matrix.Gp_35DPI_vs_Gp_MALE.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Gp_genes.counts.matrix.Gp_35DPI_vs_Gp_MALE.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.8.4/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Gp_genes.counts.matrix.Gp_35DPI_vs_Gp_MALE.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(rownames(result_table), result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --no-save --no-restore --no-site-file --no-init-file -q < Gp_genes.counts.matrix.Gp_7DPI_vs_Gp_EGG.Gp_7DPI.vs.Gp_EGG.EdgeR.Rscript
+> if (! require(edgeR)) {
++    source("https://bioconductor.org/biocLite.R")
++    biocLite("edgeR")
++    library(edgeR)
++ }
+> 
+> data = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment/Gp_genes.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(1,2,11,12)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Gp_7DPI", 2), rep("Gp_EGG", 2)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateDisp(exp_study)
+Design matrix not provided. Switch to the classic mode.
+> et = exactTest(exp_study, pair=c("Gp_7DPI", "Gp_EGG"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Gp_7DPI", sampleB="Gp_EGG", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Gp_genes.counts.matrix.Gp_7DPI_vs_Gp_EGG.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Gp_genes.counts.matrix.Gp_7DPI_vs_Gp_EGG.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.8.4/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Gp_genes.counts.matrix.Gp_7DPI_vs_Gp_EGG.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(rownames(result_table), result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --no-save --no-restore --no-site-file --no-init-file -q < Gp_genes.counts.matrix.Gp_7DPI_vs_Gp_J2.Gp_7DPI.vs.Gp_J2.EdgeR.Rscript
+> if (! require(edgeR)) {
++    source("https://bioconductor.org/biocLite.R")
++    biocLite("edgeR")
++    library(edgeR)
++ }
+> 
+> data = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment/Gp_genes.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(1,2,13,14,15)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Gp_7DPI", 2), rep("Gp_J2", 3)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateDisp(exp_study)
+Design matrix not provided. Switch to the classic mode.
+> et = exactTest(exp_study, pair=c("Gp_7DPI", "Gp_J2"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Gp_7DPI", sampleB="Gp_J2", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Gp_genes.counts.matrix.Gp_7DPI_vs_Gp_J2.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Gp_genes.counts.matrix.Gp_7DPI_vs_Gp_J2.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.8.4/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Gp_genes.counts.matrix.Gp_7DPI_vs_Gp_J2.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(rownames(result_table), result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --no-save --no-restore --no-site-file --no-init-file -q < Gp_genes.counts.matrix.Gp_7DPI_vs_Gp_MALE.Gp_7DPI.vs.Gp_MALE.EdgeR.Rscript
+> if (! require(edgeR)) {
++    source("https://bioconductor.org/biocLite.R")
++    biocLite("edgeR")
++    library(edgeR)
++ }
+> 
+> data = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment/Gp_genes.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(1,2,16,17)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Gp_7DPI", 2), rep("Gp_MALE", 2)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateDisp(exp_study)
+Design matrix not provided. Switch to the classic mode.
+> et = exactTest(exp_study, pair=c("Gp_7DPI", "Gp_MALE"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Gp_7DPI", sampleB="Gp_MALE", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Gp_genes.counts.matrix.Gp_7DPI_vs_Gp_MALE.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Gp_genes.counts.matrix.Gp_7DPI_vs_Gp_MALE.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.8.4/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Gp_genes.counts.matrix.Gp_7DPI_vs_Gp_MALE.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(rownames(result_table), result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --no-save --no-restore --no-site-file --no-init-file -q < Gp_genes.counts.matrix.Gp_EGG_vs_Gp_J2.Gp_EGG.vs.Gp_J2.EdgeR.Rscript
+> if (! require(edgeR)) {
++    source("https://bioconductor.org/biocLite.R")
++    biocLite("edgeR")
++    library(edgeR)
++ }
+> 
+> data = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment/Gp_genes.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(11,12,13,14,15)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Gp_EGG", 2), rep("Gp_J2", 3)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateDisp(exp_study)
+Design matrix not provided. Switch to the classic mode.
+> et = exactTest(exp_study, pair=c("Gp_EGG", "Gp_J2"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Gp_EGG", sampleB="Gp_J2", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Gp_genes.counts.matrix.Gp_EGG_vs_Gp_J2.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Gp_genes.counts.matrix.Gp_EGG_vs_Gp_J2.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.8.4/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Gp_genes.counts.matrix.Gp_EGG_vs_Gp_J2.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(rownames(result_table), result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --no-save --no-restore --no-site-file --no-init-file -q < Gp_genes.counts.matrix.Gp_EGG_vs_Gp_MALE.Gp_EGG.vs.Gp_MALE.EdgeR.Rscript
+> if (! require(edgeR)) {
++    source("https://bioconductor.org/biocLite.R")
++    biocLite("edgeR")
++    library(edgeR)
++ }
+> 
+> data = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment/Gp_genes.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(11,12,16,17)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Gp_EGG", 2), rep("Gp_MALE", 2)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateDisp(exp_study)
+Design matrix not provided. Switch to the classic mode.
+> et = exactTest(exp_study, pair=c("Gp_EGG", "Gp_MALE"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Gp_EGG", sampleB="Gp_MALE", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Gp_genes.counts.matrix.Gp_EGG_vs_Gp_MALE.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Gp_genes.counts.matrix.Gp_EGG_vs_Gp_MALE.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.8.4/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Gp_genes.counts.matrix.Gp_EGG_vs_Gp_MALE.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(rownames(result_table), result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+CMD: R --no-save --no-restore --no-site-file --no-init-file -q < Gp_genes.counts.matrix.Gp_J2_vs_Gp_MALE.Gp_J2.vs.Gp_MALE.EdgeR.Rscript
+> if (! require(edgeR)) {
++    source("https://bioconductor.org/biocLite.R")
++    biocLite("edgeR")
++    library(edgeR)
++ }
+> 
+> data = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment/Gp_genes.counts.matrix", header=T, row.names=1, com='')
+> col_ordering = c(13,14,15,16,17)
+> rnaseqMatrix = data[,col_ordering]
+> rnaseqMatrix = round(rnaseqMatrix)
+> rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+> conditions = factor(c(rep("Gp_J2", 3), rep("Gp_MALE", 2)))
+> 
+> exp_study = DGEList(counts=rnaseqMatrix, group=conditions)
+> exp_study = calcNormFactors(exp_study)
+> exp_study = estimateDisp(exp_study)
+Design matrix not provided. Switch to the classic mode.
+> et = exactTest(exp_study, pair=c("Gp_J2", "Gp_MALE"))
+> tTags = topTags(et,n=NULL)
+> result_table = tTags$table
+> result_table = data.frame(sampleA="Gp_J2", sampleB="Gp_MALE", result_table)
+> result_table$logFC = -1 * result_table$logFC
+> write.table(result_table, file='Gp_genes.counts.matrix.Gp_J2_vs_Gp_MALE.edgeR.DE_results', sep='	', quote=F, row.names=T)
+> write.table(rnaseqMatrix, file='Gp_genes.counts.matrix.Gp_J2_vs_Gp_MALE.edgeR.count_matrix', sep='	', quote=F, row.names=T)
+> source("/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.8.4/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+> pdf("Gp_genes.counts.matrix.Gp_J2_vs_Gp_MALE.edgeR.DE_results.MA_n_Volcano.pdf")
+> plot_MA_and_Volcano(rownames(result_table), result_table$logCPM, result_table$logFC, result_table$FDR)
+> dev.off()
+null device 
+          1 
+> 
+/shelf/apps/pjt6/apps/trinityrnaseq-Trinity-v2.8.4/Analysis/DifferentialExpression//analyze_diff_expr.pl --examine_GO_enrichment --include_GOplot --gene_lengths /storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//gene_len_GO.txt --GO_annots /storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//Go_final.txt --order_columns_by_samples_file --matrix ../Gp_genes.counts.matrix.TMM_normalized.FPKM -P 0.05 -C 2 --max_DE_genes_per_comparison 50000 --samples /storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//samples_described.txt
+> library(goseq)
+> library(GO.db)
+> library(qvalue)
+> # capture list of genes for functional enrichment testing
+> factor_labeling = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_21DPI.edgeR.DE_results.P0.05_C2.Gp_14DPI-UP.subset", row.names=1)
+> factor_labeling[,1] = rep('custom_list', dim(factor_labeling)[1])
+> factor_labeling = factor_labeling[,1,drop=F]
+> colnames(factor_labeling) = c('type')
+> factor_list = unique(factor_labeling[,1])
+> DE_genes = rownames(factor_labeling)
+> 
+> 
+> # get gene lengths
+> gene_lengths = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//gene_len_GO.txt", header=T, row.names=1, com='')
+> gene_lengths = as.matrix(gene_lengths[,1,drop=F])
+> 
+> 
+> # get background gene list
+> background = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_21DPI.edgeR.count_matrix", header=T, row.names=1)
+> background.gene_ids = rownames(background)
+> background.gene_ids = unique(c(background.gene_ids, DE_genes))
+> sample_set_gene_ids = background.gene_ids
+> 
+> 
+> # parse GO assignments
+> GO_info = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//Go_final.txt", header=F, row.names=1,stringsAsFactors=F)
+> GO_info_listed = apply(GO_info, 1, function(x) unlist(strsplit(x,',')))
+> names(GO_info_listed) = rownames(GO_info)
+> get_GO_term_descr =  function(x) {
++     d = 'none';
++     go_info = GOTERM[[x]];
++     if (length(go_info) >0) { d = paste(Ontology(go_info), Term(go_info), sep=' ');}
++     return(d);
++ }
+> 
+> 
+> #organize go_id -> list of genes
+> GO_to_gene_list = list()
+> for (gene_id in intersect(names(GO_info_listed), sample_set_gene_ids)) {
++     go_list = GO_info_listed[[gene_id]]
++     for (go_id in go_list) {
++         GO_to_gene_list[[go_id]] = c(GO_to_gene_list[[go_id]], gene_id)
++     }
++ }
+> 
+> 
+> # GO-Seq protocol: build pwf based on ALL DE features
+> missing_gene_lengths = sample_set_gene_ids[! sample_set_gene_ids %in% rownames(gene_lengths)]
+> if (length(missing_gene_lengths) > 0) {
++      stop("Error, missing gene lengths for features: ", paste(missing_gene_lengths, collapse=', '))
++ }
+> sample_set_gene_lengths = gene_lengths[sample_set_gene_ids,]
+> GO_info_listed = GO_info_listed[ names(GO_info_listed) %in% sample_set_gene_ids ]
+> cat_genes_vec = as.integer(sample_set_gene_ids %in% rownames(factor_labeling))
+> pwf=nullp(cat_genes_vec, bias.data=sample_set_gene_lengths)
+> rownames(pwf) = sample_set_gene_ids
+> 
+> 
+> # perform functional enrichment testing for each category.
+> for (feature_cat in factor_list) {
++     message('Processing category: ', feature_cat)
++     gene_ids_in_feature_cat = rownames(factor_labeling)[factor_labeling$type == feature_cat]
++     cat_genes_vec = as.integer(sample_set_gene_ids %in% gene_ids_in_feature_cat)
++     pwf$DEgenes = cat_genes_vec
++     res = goseq(pwf,gene2cat=GO_info_listed, use_genes_without_cat=TRUE)
++     ## over-represented categories:
++      pvals = res$over_represented_pvalue
++      pvals[pvals > 1 - 1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$over_represented_FDR = q$qvalues
++ go_enrich_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_21DPI.edgeR.DE_results.P0.05_C2.Gp_14DPI-UP.subset", '.GOseq.enriched', sep='')
++     result_table = res[res$over_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     result_table$gene_ids = do.call(rbind, lapply(result_table$category, function(x) { 
++             gene_list = GO_to_gene_list[[x]]
++             gene_list = gene_list[gene_list %in% gene_ids_in_feature_cat]
++             paste(gene_list, collapse=', ');
++      }) )
++     write.table(result_table[order(result_table$over_represented_pvalue),], file=go_enrich_filename, sep='	', quote=F, row.names=F)
++     ## under-represented categories:
++      pvals = res$under_represented_pvalue
++      pvals[pvals>1-1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$under_represented_FDR = q$qvalues
++     go_depleted_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_21DPI.edgeR.DE_results.P0.05_C2.Gp_14DPI-UP.subset", '.GOseq.depleted', sep='')
++     result_table = res[res$under_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     write.table(result_table[order(result_table$under_represented_pvalue),], file=go_depleted_filename, sep='	', quote=F, row.names=F)
++ }
+> 
+> library(goseq)
+> library(GO.db)
+> library(qvalue)
+> # capture list of genes for functional enrichment testing
+> factor_labeling = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_21DPI.edgeR.DE_results.P0.05_C2.Gp_21DPI-UP.subset", row.names=1)
+> factor_labeling[,1] = rep('custom_list', dim(factor_labeling)[1])
+> factor_labeling = factor_labeling[,1,drop=F]
+> colnames(factor_labeling) = c('type')
+> factor_list = unique(factor_labeling[,1])
+> DE_genes = rownames(factor_labeling)
+> 
+> 
+> # get gene lengths
+> gene_lengths = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//gene_len_GO.txt", header=T, row.names=1, com='')
+> gene_lengths = as.matrix(gene_lengths[,1,drop=F])
+> 
+> 
+> # get background gene list
+> background = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_21DPI.edgeR.count_matrix", header=T, row.names=1)
+> background.gene_ids = rownames(background)
+> background.gene_ids = unique(c(background.gene_ids, DE_genes))
+> sample_set_gene_ids = background.gene_ids
+> 
+> 
+> # parse GO assignments
+> GO_info = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//Go_final.txt", header=F, row.names=1,stringsAsFactors=F)
+> GO_info_listed = apply(GO_info, 1, function(x) unlist(strsplit(x,',')))
+> names(GO_info_listed) = rownames(GO_info)
+> get_GO_term_descr =  function(x) {
++     d = 'none';
++     go_info = GOTERM[[x]];
++     if (length(go_info) >0) { d = paste(Ontology(go_info), Term(go_info), sep=' ');}
++     return(d);
++ }
+> 
+> 
+> #organize go_id -> list of genes
+> GO_to_gene_list = list()
+> for (gene_id in intersect(names(GO_info_listed), sample_set_gene_ids)) {
++     go_list = GO_info_listed[[gene_id]]
++     for (go_id in go_list) {
++         GO_to_gene_list[[go_id]] = c(GO_to_gene_list[[go_id]], gene_id)
++     }
++ }
+> 
+> 
+> # GO-Seq protocol: build pwf based on ALL DE features
+> missing_gene_lengths = sample_set_gene_ids[! sample_set_gene_ids %in% rownames(gene_lengths)]
+> if (length(missing_gene_lengths) > 0) {
++      stop("Error, missing gene lengths for features: ", paste(missing_gene_lengths, collapse=', '))
++ }
+> sample_set_gene_lengths = gene_lengths[sample_set_gene_ids,]
+> GO_info_listed = GO_info_listed[ names(GO_info_listed) %in% sample_set_gene_ids ]
+> cat_genes_vec = as.integer(sample_set_gene_ids %in% rownames(factor_labeling))
+> pwf=nullp(cat_genes_vec, bias.data=sample_set_gene_lengths)
+> rownames(pwf) = sample_set_gene_ids
+> 
+> 
+> # perform functional enrichment testing for each category.
+> for (feature_cat in factor_list) {
++     message('Processing category: ', feature_cat)
++     gene_ids_in_feature_cat = rownames(factor_labeling)[factor_labeling$type == feature_cat]
++     cat_genes_vec = as.integer(sample_set_gene_ids %in% gene_ids_in_feature_cat)
++     pwf$DEgenes = cat_genes_vec
++     res = goseq(pwf,gene2cat=GO_info_listed, use_genes_without_cat=TRUE)
++     ## over-represented categories:
++      pvals = res$over_represented_pvalue
++      pvals[pvals > 1 - 1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$over_represented_FDR = q$qvalues
++ go_enrich_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_21DPI.edgeR.DE_results.P0.05_C2.Gp_21DPI-UP.subset", '.GOseq.enriched', sep='')
++     result_table = res[res$over_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     result_table$gene_ids = do.call(rbind, lapply(result_table$category, function(x) { 
++             gene_list = GO_to_gene_list[[x]]
++             gene_list = gene_list[gene_list %in% gene_ids_in_feature_cat]
++             paste(gene_list, collapse=', ');
++      }) )
++     write.table(result_table[order(result_table$over_represented_pvalue),], file=go_enrich_filename, sep='	', quote=F, row.names=F)
++     ## under-represented categories:
++      pvals = res$under_represented_pvalue
++      pvals[pvals>1-1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$under_represented_FDR = q$qvalues
++     go_depleted_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_21DPI.edgeR.DE_results.P0.05_C2.Gp_21DPI-UP.subset", '.GOseq.depleted', sep='')
++     result_table = res[res$under_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     write.table(result_table[order(result_table$under_represented_pvalue),], file=go_depleted_filename, sep='	', quote=F, row.names=F)
++ }
+> 
+> library(goseq)
+> library(GO.db)
+> library(qvalue)
+> # capture list of genes for functional enrichment testing
+> factor_labeling = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_21DPI.edgeR.DE_results.P0.05_C2.DE.subset", row.names=1)
+> factor_labeling[,1] = rep('custom_list', dim(factor_labeling)[1])
+> factor_labeling = factor_labeling[,1,drop=F]
+> colnames(factor_labeling) = c('type')
+> factor_list = unique(factor_labeling[,1])
+> DE_genes = rownames(factor_labeling)
+> 
+> 
+> # get gene lengths
+> gene_lengths = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//gene_len_GO.txt", header=T, row.names=1, com='')
+> gene_lengths = as.matrix(gene_lengths[,1,drop=F])
+> 
+> 
+> # get background gene list
+> background = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_21DPI.edgeR.count_matrix", header=T, row.names=1)
+> background.gene_ids = rownames(background)
+> background.gene_ids = unique(c(background.gene_ids, DE_genes))
+> sample_set_gene_ids = background.gene_ids
+> 
+> 
+> # parse GO assignments
+> GO_info = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//Go_final.txt", header=F, row.names=1,stringsAsFactors=F)
+> GO_info_listed = apply(GO_info, 1, function(x) unlist(strsplit(x,',')))
+> names(GO_info_listed) = rownames(GO_info)
+> get_GO_term_descr =  function(x) {
++     d = 'none';
++     go_info = GOTERM[[x]];
++     if (length(go_info) >0) { d = paste(Ontology(go_info), Term(go_info), sep=' ');}
++     return(d);
++ }
+> 
+> 
+> #organize go_id -> list of genes
+> GO_to_gene_list = list()
+> for (gene_id in intersect(names(GO_info_listed), sample_set_gene_ids)) {
++     go_list = GO_info_listed[[gene_id]]
++     for (go_id in go_list) {
++         GO_to_gene_list[[go_id]] = c(GO_to_gene_list[[go_id]], gene_id)
++     }
++ }
+> 
+> 
+> # GO-Seq protocol: build pwf based on ALL DE features
+> missing_gene_lengths = sample_set_gene_ids[! sample_set_gene_ids %in% rownames(gene_lengths)]
+> if (length(missing_gene_lengths) > 0) {
++      stop("Error, missing gene lengths for features: ", paste(missing_gene_lengths, collapse=', '))
++ }
+> sample_set_gene_lengths = gene_lengths[sample_set_gene_ids,]
+> GO_info_listed = GO_info_listed[ names(GO_info_listed) %in% sample_set_gene_ids ]
+> cat_genes_vec = as.integer(sample_set_gene_ids %in% rownames(factor_labeling))
+> pwf=nullp(cat_genes_vec, bias.data=sample_set_gene_lengths)
+> rownames(pwf) = sample_set_gene_ids
+> 
+> 
+> # perform functional enrichment testing for each category.
+> for (feature_cat in factor_list) {
++     message('Processing category: ', feature_cat)
++     gene_ids_in_feature_cat = rownames(factor_labeling)[factor_labeling$type == feature_cat]
++     cat_genes_vec = as.integer(sample_set_gene_ids %in% gene_ids_in_feature_cat)
++     pwf$DEgenes = cat_genes_vec
++     res = goseq(pwf,gene2cat=GO_info_listed, use_genes_without_cat=TRUE)
++     ## over-represented categories:
++      pvals = res$over_represented_pvalue
++      pvals[pvals > 1 - 1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$over_represented_FDR = q$qvalues
++ go_enrich_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_21DPI.edgeR.DE_results.P0.05_C2.DE.subset", '.GOseq.enriched', sep='')
++     result_table = res[res$over_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     result_table$gene_ids = do.call(rbind, lapply(result_table$category, function(x) { 
++             gene_list = GO_to_gene_list[[x]]
++             gene_list = gene_list[gene_list %in% gene_ids_in_feature_cat]
++             paste(gene_list, collapse=', ');
++      }) )
++     write.table(result_table[order(result_table$over_represented_pvalue),], file=go_enrich_filename, sep='	', quote=F, row.names=F)
++     ## under-represented categories:
++      pvals = res$under_represented_pvalue
++      pvals[pvals>1-1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$under_represented_FDR = q$qvalues
++     go_depleted_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_21DPI.edgeR.DE_results.P0.05_C2.DE.subset", '.GOseq.depleted', sep='')
++     result_table = res[res$under_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     write.table(result_table[order(result_table$under_represented_pvalue),], file=go_depleted_filename, sep='	', quote=F, row.names=F)
++ }
+> 
+> library(goseq)
+> library(GO.db)
+> library(qvalue)
+> # capture list of genes for functional enrichment testing
+> factor_labeling = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_28DPI.edgeR.DE_results.P0.05_C2.Gp_14DPI-UP.subset", row.names=1)
+> factor_labeling[,1] = rep('custom_list', dim(factor_labeling)[1])
+> factor_labeling = factor_labeling[,1,drop=F]
+> colnames(factor_labeling) = c('type')
+> factor_list = unique(factor_labeling[,1])
+> DE_genes = rownames(factor_labeling)
+> 
+> 
+> # get gene lengths
+> gene_lengths = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//gene_len_GO.txt", header=T, row.names=1, com='')
+> gene_lengths = as.matrix(gene_lengths[,1,drop=F])
+> 
+> 
+> # get background gene list
+> background = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_28DPI.edgeR.count_matrix", header=T, row.names=1)
+> background.gene_ids = rownames(background)
+> background.gene_ids = unique(c(background.gene_ids, DE_genes))
+> sample_set_gene_ids = background.gene_ids
+> 
+> 
+> # parse GO assignments
+> GO_info = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//Go_final.txt", header=F, row.names=1,stringsAsFactors=F)
+> GO_info_listed = apply(GO_info, 1, function(x) unlist(strsplit(x,',')))
+> names(GO_info_listed) = rownames(GO_info)
+> get_GO_term_descr =  function(x) {
++     d = 'none';
++     go_info = GOTERM[[x]];
++     if (length(go_info) >0) { d = paste(Ontology(go_info), Term(go_info), sep=' ');}
++     return(d);
++ }
+> 
+> 
+> #organize go_id -> list of genes
+> GO_to_gene_list = list()
+> for (gene_id in intersect(names(GO_info_listed), sample_set_gene_ids)) {
++     go_list = GO_info_listed[[gene_id]]
++     for (go_id in go_list) {
++         GO_to_gene_list[[go_id]] = c(GO_to_gene_list[[go_id]], gene_id)
++     }
++ }
+> 
+> 
+> # GO-Seq protocol: build pwf based on ALL DE features
+> missing_gene_lengths = sample_set_gene_ids[! sample_set_gene_ids %in% rownames(gene_lengths)]
+> if (length(missing_gene_lengths) > 0) {
++      stop("Error, missing gene lengths for features: ", paste(missing_gene_lengths, collapse=', '))
++ }
+> sample_set_gene_lengths = gene_lengths[sample_set_gene_ids,]
+> GO_info_listed = GO_info_listed[ names(GO_info_listed) %in% sample_set_gene_ids ]
+> cat_genes_vec = as.integer(sample_set_gene_ids %in% rownames(factor_labeling))
+> pwf=nullp(cat_genes_vec, bias.data=sample_set_gene_lengths)
+> rownames(pwf) = sample_set_gene_ids
+> 
+> 
+> # perform functional enrichment testing for each category.
+> for (feature_cat in factor_list) {
++     message('Processing category: ', feature_cat)
++     gene_ids_in_feature_cat = rownames(factor_labeling)[factor_labeling$type == feature_cat]
++     cat_genes_vec = as.integer(sample_set_gene_ids %in% gene_ids_in_feature_cat)
++     pwf$DEgenes = cat_genes_vec
++     res = goseq(pwf,gene2cat=GO_info_listed, use_genes_without_cat=TRUE)
++     ## over-represented categories:
++      pvals = res$over_represented_pvalue
++      pvals[pvals > 1 - 1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$over_represented_FDR = q$qvalues
++ go_enrich_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_28DPI.edgeR.DE_results.P0.05_C2.Gp_14DPI-UP.subset", '.GOseq.enriched', sep='')
++     result_table = res[res$over_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     result_table$gene_ids = do.call(rbind, lapply(result_table$category, function(x) { 
++             gene_list = GO_to_gene_list[[x]]
++             gene_list = gene_list[gene_list %in% gene_ids_in_feature_cat]
++             paste(gene_list, collapse=', ');
++      }) )
++     write.table(result_table[order(result_table$over_represented_pvalue),], file=go_enrich_filename, sep='	', quote=F, row.names=F)
++     ## under-represented categories:
++      pvals = res$under_represented_pvalue
++      pvals[pvals>1-1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$under_represented_FDR = q$qvalues
++     go_depleted_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_28DPI.edgeR.DE_results.P0.05_C2.Gp_14DPI-UP.subset", '.GOseq.depleted', sep='')
++     result_table = res[res$under_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     write.table(result_table[order(result_table$under_represented_pvalue),], file=go_depleted_filename, sep='	', quote=F, row.names=F)
++ }
+> 
+> library(goseq)
+> library(GO.db)
+> library(qvalue)
+> # capture list of genes for functional enrichment testing
+> factor_labeling = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_28DPI.edgeR.DE_results.P0.05_C2.Gp_28DPI-UP.subset", row.names=1)
+> factor_labeling[,1] = rep('custom_list', dim(factor_labeling)[1])
+> factor_labeling = factor_labeling[,1,drop=F]
+> colnames(factor_labeling) = c('type')
+> factor_list = unique(factor_labeling[,1])
+> DE_genes = rownames(factor_labeling)
+> 
+> 
+> # get gene lengths
+> gene_lengths = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//gene_len_GO.txt", header=T, row.names=1, com='')
+> gene_lengths = as.matrix(gene_lengths[,1,drop=F])
+> 
+> 
+> # get background gene list
+> background = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_28DPI.edgeR.count_matrix", header=T, row.names=1)
+> background.gene_ids = rownames(background)
+> background.gene_ids = unique(c(background.gene_ids, DE_genes))
+> sample_set_gene_ids = background.gene_ids
+> 
+> 
+> # parse GO assignments
+> GO_info = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//Go_final.txt", header=F, row.names=1,stringsAsFactors=F)
+> GO_info_listed = apply(GO_info, 1, function(x) unlist(strsplit(x,',')))
+> names(GO_info_listed) = rownames(GO_info)
+> get_GO_term_descr =  function(x) {
++     d = 'none';
++     go_info = GOTERM[[x]];
++     if (length(go_info) >0) { d = paste(Ontology(go_info), Term(go_info), sep=' ');}
++     return(d);
++ }
+> 
+> 
+> #organize go_id -> list of genes
+> GO_to_gene_list = list()
+> for (gene_id in intersect(names(GO_info_listed), sample_set_gene_ids)) {
++     go_list = GO_info_listed[[gene_id]]
++     for (go_id in go_list) {
++         GO_to_gene_list[[go_id]] = c(GO_to_gene_list[[go_id]], gene_id)
++     }
++ }
+> 
+> 
+> # GO-Seq protocol: build pwf based on ALL DE features
+> missing_gene_lengths = sample_set_gene_ids[! sample_set_gene_ids %in% rownames(gene_lengths)]
+> if (length(missing_gene_lengths) > 0) {
++      stop("Error, missing gene lengths for features: ", paste(missing_gene_lengths, collapse=', '))
++ }
+> sample_set_gene_lengths = gene_lengths[sample_set_gene_ids,]
+> GO_info_listed = GO_info_listed[ names(GO_info_listed) %in% sample_set_gene_ids ]
+> cat_genes_vec = as.integer(sample_set_gene_ids %in% rownames(factor_labeling))
+> pwf=nullp(cat_genes_vec, bias.data=sample_set_gene_lengths)
+> rownames(pwf) = sample_set_gene_ids
+> 
+> 
+> # perform functional enrichment testing for each category.
+> for (feature_cat in factor_list) {
++     message('Processing category: ', feature_cat)
++     gene_ids_in_feature_cat = rownames(factor_labeling)[factor_labeling$type == feature_cat]
++     cat_genes_vec = as.integer(sample_set_gene_ids %in% gene_ids_in_feature_cat)
++     pwf$DEgenes = cat_genes_vec
++     res = goseq(pwf,gene2cat=GO_info_listed, use_genes_without_cat=TRUE)
++     ## over-represented categories:
++      pvals = res$over_represented_pvalue
++      pvals[pvals > 1 - 1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$over_represented_FDR = q$qvalues
++ go_enrich_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_28DPI.edgeR.DE_results.P0.05_C2.Gp_28DPI-UP.subset", '.GOseq.enriched', sep='')
++     result_table = res[res$over_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     result_table$gene_ids = do.call(rbind, lapply(result_table$category, function(x) { 
++             gene_list = GO_to_gene_list[[x]]
++             gene_list = gene_list[gene_list %in% gene_ids_in_feature_cat]
++             paste(gene_list, collapse=', ');
++      }) )
++     write.table(result_table[order(result_table$over_represented_pvalue),], file=go_enrich_filename, sep='	', quote=F, row.names=F)
++     ## under-represented categories:
++      pvals = res$under_represented_pvalue
++      pvals[pvals>1-1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$under_represented_FDR = q$qvalues
++     go_depleted_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_28DPI.edgeR.DE_results.P0.05_C2.Gp_28DPI-UP.subset", '.GOseq.depleted', sep='')
++     result_table = res[res$under_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     write.table(result_table[order(result_table$under_represented_pvalue),], file=go_depleted_filename, sep='	', quote=F, row.names=F)
++ }
+> 
+> library(goseq)
+> library(GO.db)
+> library(qvalue)
+> # capture list of genes for functional enrichment testing
+> factor_labeling = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_28DPI.edgeR.DE_results.P0.05_C2.DE.subset", row.names=1)
+> factor_labeling[,1] = rep('custom_list', dim(factor_labeling)[1])
+> factor_labeling = factor_labeling[,1,drop=F]
+> colnames(factor_labeling) = c('type')
+> factor_list = unique(factor_labeling[,1])
+> DE_genes = rownames(factor_labeling)
+> 
+> 
+> # get gene lengths
+> gene_lengths = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//gene_len_GO.txt", header=T, row.names=1, com='')
+> gene_lengths = as.matrix(gene_lengths[,1,drop=F])
+> 
+> 
+> # get background gene list
+> background = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_28DPI.edgeR.count_matrix", header=T, row.names=1)
+> background.gene_ids = rownames(background)
+> background.gene_ids = unique(c(background.gene_ids, DE_genes))
+> sample_set_gene_ids = background.gene_ids
+> 
+> 
+> # parse GO assignments
+> GO_info = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//Go_final.txt", header=F, row.names=1,stringsAsFactors=F)
+> GO_info_listed = apply(GO_info, 1, function(x) unlist(strsplit(x,',')))
+> names(GO_info_listed) = rownames(GO_info)
+> get_GO_term_descr =  function(x) {
++     d = 'none';
++     go_info = GOTERM[[x]];
++     if (length(go_info) >0) { d = paste(Ontology(go_info), Term(go_info), sep=' ');}
++     return(d);
++ }
+> 
+> 
+> #organize go_id -> list of genes
+> GO_to_gene_list = list()
+> for (gene_id in intersect(names(GO_info_listed), sample_set_gene_ids)) {
++     go_list = GO_info_listed[[gene_id]]
++     for (go_id in go_list) {
++         GO_to_gene_list[[go_id]] = c(GO_to_gene_list[[go_id]], gene_id)
++     }
++ }
+> 
+> 
+> # GO-Seq protocol: build pwf based on ALL DE features
+> missing_gene_lengths = sample_set_gene_ids[! sample_set_gene_ids %in% rownames(gene_lengths)]
+> if (length(missing_gene_lengths) > 0) {
++      stop("Error, missing gene lengths for features: ", paste(missing_gene_lengths, collapse=', '))
++ }
+> sample_set_gene_lengths = gene_lengths[sample_set_gene_ids,]
+> GO_info_listed = GO_info_listed[ names(GO_info_listed) %in% sample_set_gene_ids ]
+> cat_genes_vec = as.integer(sample_set_gene_ids %in% rownames(factor_labeling))
+> pwf=nullp(cat_genes_vec, bias.data=sample_set_gene_lengths)
+> rownames(pwf) = sample_set_gene_ids
+> 
+> 
+> # perform functional enrichment testing for each category.
+> for (feature_cat in factor_list) {
++     message('Processing category: ', feature_cat)
++     gene_ids_in_feature_cat = rownames(factor_labeling)[factor_labeling$type == feature_cat]
++     cat_genes_vec = as.integer(sample_set_gene_ids %in% gene_ids_in_feature_cat)
++     pwf$DEgenes = cat_genes_vec
++     res = goseq(pwf,gene2cat=GO_info_listed, use_genes_without_cat=TRUE)
++     ## over-represented categories:
++      pvals = res$over_represented_pvalue
++      pvals[pvals > 1 - 1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$over_represented_FDR = q$qvalues
++ go_enrich_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_28DPI.edgeR.DE_results.P0.05_C2.DE.subset", '.GOseq.enriched', sep='')
++     result_table = res[res$over_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     result_table$gene_ids = do.call(rbind, lapply(result_table$category, function(x) { 
++             gene_list = GO_to_gene_list[[x]]
++             gene_list = gene_list[gene_list %in% gene_ids_in_feature_cat]
++             paste(gene_list, collapse=', ');
++      }) )
++     write.table(result_table[order(result_table$over_represented_pvalue),], file=go_enrich_filename, sep='	', quote=F, row.names=F)
++     ## under-represented categories:
++      pvals = res$under_represented_pvalue
++      pvals[pvals>1-1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$under_represented_FDR = q$qvalues
++     go_depleted_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_28DPI.edgeR.DE_results.P0.05_C2.DE.subset", '.GOseq.depleted', sep='')
++     result_table = res[res$under_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     write.table(result_table[order(result_table$under_represented_pvalue),], file=go_depleted_filename, sep='	', quote=F, row.names=F)
++ }
+> 
+> library(goseq)
+> library(GO.db)
+> library(qvalue)
+> # capture list of genes for functional enrichment testing
+> factor_labeling = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_35DPI.edgeR.DE_results.P0.05_C2.Gp_14DPI-UP.subset", row.names=1)
+> factor_labeling[,1] = rep('custom_list', dim(factor_labeling)[1])
+> factor_labeling = factor_labeling[,1,drop=F]
+> colnames(factor_labeling) = c('type')
+> factor_list = unique(factor_labeling[,1])
+> DE_genes = rownames(factor_labeling)
+> 
+> 
+> # get gene lengths
+> gene_lengths = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//gene_len_GO.txt", header=T, row.names=1, com='')
+> gene_lengths = as.matrix(gene_lengths[,1,drop=F])
+> 
+> 
+> # get background gene list
+> background = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_35DPI.edgeR.count_matrix", header=T, row.names=1)
+> background.gene_ids = rownames(background)
+> background.gene_ids = unique(c(background.gene_ids, DE_genes))
+> sample_set_gene_ids = background.gene_ids
+> 
+> 
+> # parse GO assignments
+> GO_info = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//Go_final.txt", header=F, row.names=1,stringsAsFactors=F)
+> GO_info_listed = apply(GO_info, 1, function(x) unlist(strsplit(x,',')))
+> names(GO_info_listed) = rownames(GO_info)
+> get_GO_term_descr =  function(x) {
++     d = 'none';
++     go_info = GOTERM[[x]];
++     if (length(go_info) >0) { d = paste(Ontology(go_info), Term(go_info), sep=' ');}
++     return(d);
++ }
+> 
+> 
+> #organize go_id -> list of genes
+> GO_to_gene_list = list()
+> for (gene_id in intersect(names(GO_info_listed), sample_set_gene_ids)) {
++     go_list = GO_info_listed[[gene_id]]
++     for (go_id in go_list) {
++         GO_to_gene_list[[go_id]] = c(GO_to_gene_list[[go_id]], gene_id)
++     }
++ }
+> 
+> 
+> # GO-Seq protocol: build pwf based on ALL DE features
+> missing_gene_lengths = sample_set_gene_ids[! sample_set_gene_ids %in% rownames(gene_lengths)]
+> if (length(missing_gene_lengths) > 0) {
++      stop("Error, missing gene lengths for features: ", paste(missing_gene_lengths, collapse=', '))
++ }
+> sample_set_gene_lengths = gene_lengths[sample_set_gene_ids,]
+> GO_info_listed = GO_info_listed[ names(GO_info_listed) %in% sample_set_gene_ids ]
+> cat_genes_vec = as.integer(sample_set_gene_ids %in% rownames(factor_labeling))
+> pwf=nullp(cat_genes_vec, bias.data=sample_set_gene_lengths)
+> rownames(pwf) = sample_set_gene_ids
+> 
+> 
+> # perform functional enrichment testing for each category.
+> for (feature_cat in factor_list) {
++     message('Processing category: ', feature_cat)
++     gene_ids_in_feature_cat = rownames(factor_labeling)[factor_labeling$type == feature_cat]
++     cat_genes_vec = as.integer(sample_set_gene_ids %in% gene_ids_in_feature_cat)
++     pwf$DEgenes = cat_genes_vec
++     res = goseq(pwf,gene2cat=GO_info_listed, use_genes_without_cat=TRUE)
++     ## over-represented categories:
++      pvals = res$over_represented_pvalue
++      pvals[pvals > 1 - 1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$over_represented_FDR = q$qvalues
++ go_enrich_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_35DPI.edgeR.DE_results.P0.05_C2.Gp_14DPI-UP.subset", '.GOseq.enriched', sep='')
++     result_table = res[res$over_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     result_table$gene_ids = do.call(rbind, lapply(result_table$category, function(x) { 
++             gene_list = GO_to_gene_list[[x]]
++             gene_list = gene_list[gene_list %in% gene_ids_in_feature_cat]
++             paste(gene_list, collapse=', ');
++      }) )
++     write.table(result_table[order(result_table$over_represented_pvalue),], file=go_enrich_filename, sep='	', quote=F, row.names=F)
++     ## under-represented categories:
++      pvals = res$under_represented_pvalue
++      pvals[pvals>1-1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$under_represented_FDR = q$qvalues
++     go_depleted_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_35DPI.edgeR.DE_results.P0.05_C2.Gp_14DPI-UP.subset", '.GOseq.depleted', sep='')
++     result_table = res[res$under_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     write.table(result_table[order(result_table$under_represented_pvalue),], file=go_depleted_filename, sep='	', quote=F, row.names=F)
++ }
+> 
+> library(goseq)
+> library(GO.db)
+> library(qvalue)
+> # capture list of genes for functional enrichment testing
+> factor_labeling = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_35DPI.edgeR.DE_results.P0.05_C2.Gp_35DPI-UP.subset", row.names=1)
+> factor_labeling[,1] = rep('custom_list', dim(factor_labeling)[1])
+> factor_labeling = factor_labeling[,1,drop=F]
+> colnames(factor_labeling) = c('type')
+> factor_list = unique(factor_labeling[,1])
+> DE_genes = rownames(factor_labeling)
+> 
+> 
+> # get gene lengths
+> gene_lengths = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//gene_len_GO.txt", header=T, row.names=1, com='')
+> gene_lengths = as.matrix(gene_lengths[,1,drop=F])
+> 
+> 
+> # get background gene list
+> background = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_35DPI.edgeR.count_matrix", header=T, row.names=1)
+> background.gene_ids = rownames(background)
+> background.gene_ids = unique(c(background.gene_ids, DE_genes))
+> sample_set_gene_ids = background.gene_ids
+> 
+> 
+> # parse GO assignments
+> GO_info = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//Go_final.txt", header=F, row.names=1,stringsAsFactors=F)
+> GO_info_listed = apply(GO_info, 1, function(x) unlist(strsplit(x,',')))
+> names(GO_info_listed) = rownames(GO_info)
+> get_GO_term_descr =  function(x) {
++     d = 'none';
++     go_info = GOTERM[[x]];
++     if (length(go_info) >0) { d = paste(Ontology(go_info), Term(go_info), sep=' ');}
++     return(d);
++ }
+> 
+> 
+> #organize go_id -> list of genes
+> GO_to_gene_list = list()
+> for (gene_id in intersect(names(GO_info_listed), sample_set_gene_ids)) {
++     go_list = GO_info_listed[[gene_id]]
++     for (go_id in go_list) {
++         GO_to_gene_list[[go_id]] = c(GO_to_gene_list[[go_id]], gene_id)
++     }
++ }
+> 
+> 
+> # GO-Seq protocol: build pwf based on ALL DE features
+> missing_gene_lengths = sample_set_gene_ids[! sample_set_gene_ids %in% rownames(gene_lengths)]
+> if (length(missing_gene_lengths) > 0) {
++      stop("Error, missing gene lengths for features: ", paste(missing_gene_lengths, collapse=', '))
++ }
+> sample_set_gene_lengths = gene_lengths[sample_set_gene_ids,]
+> GO_info_listed = GO_info_listed[ names(GO_info_listed) %in% sample_set_gene_ids ]
+> cat_genes_vec = as.integer(sample_set_gene_ids %in% rownames(factor_labeling))
+> pwf=nullp(cat_genes_vec, bias.data=sample_set_gene_lengths)
+> rownames(pwf) = sample_set_gene_ids
+> 
+> 
+> # perform functional enrichment testing for each category.
+> for (feature_cat in factor_list) {
++     message('Processing category: ', feature_cat)
++     gene_ids_in_feature_cat = rownames(factor_labeling)[factor_labeling$type == feature_cat]
++     cat_genes_vec = as.integer(sample_set_gene_ids %in% gene_ids_in_feature_cat)
++     pwf$DEgenes = cat_genes_vec
++     res = goseq(pwf,gene2cat=GO_info_listed, use_genes_without_cat=TRUE)
++     ## over-represented categories:
++      pvals = res$over_represented_pvalue
++      pvals[pvals > 1 - 1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$over_represented_FDR = q$qvalues
++ go_enrich_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_35DPI.edgeR.DE_results.P0.05_C2.Gp_35DPI-UP.subset", '.GOseq.enriched', sep='')
++     result_table = res[res$over_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     result_table$gene_ids = do.call(rbind, lapply(result_table$category, function(x) { 
++             gene_list = GO_to_gene_list[[x]]
++             gene_list = gene_list[gene_list %in% gene_ids_in_feature_cat]
++             paste(gene_list, collapse=', ');
++      }) )
++     write.table(result_table[order(result_table$over_represented_pvalue),], file=go_enrich_filename, sep='	', quote=F, row.names=F)
++     ## under-represented categories:
++      pvals = res$under_represented_pvalue
++      pvals[pvals>1-1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$under_represented_FDR = q$qvalues
++     go_depleted_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_35DPI.edgeR.DE_results.P0.05_C2.Gp_35DPI-UP.subset", '.GOseq.depleted', sep='')
++     result_table = res[res$under_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     write.table(result_table[order(result_table$under_represented_pvalue),], file=go_depleted_filename, sep='	', quote=F, row.names=F)
++ }
+> 
+> library(goseq)
+> library(GO.db)
+> library(qvalue)
+> # capture list of genes for functional enrichment testing
+> factor_labeling = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_35DPI.edgeR.DE_results.P0.05_C2.DE.subset", row.names=1)
+> factor_labeling[,1] = rep('custom_list', dim(factor_labeling)[1])
+> factor_labeling = factor_labeling[,1,drop=F]
+> colnames(factor_labeling) = c('type')
+> factor_list = unique(factor_labeling[,1])
+> DE_genes = rownames(factor_labeling)
+> 
+> 
+> # get gene lengths
+> gene_lengths = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//gene_len_GO.txt", header=T, row.names=1, com='')
+> gene_lengths = as.matrix(gene_lengths[,1,drop=F])
+> 
+> 
+> # get background gene list
+> background = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_35DPI.edgeR.count_matrix", header=T, row.names=1)
+> background.gene_ids = rownames(background)
+> background.gene_ids = unique(c(background.gene_ids, DE_genes))
+> sample_set_gene_ids = background.gene_ids
+> 
+> 
+> # parse GO assignments
+> GO_info = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//Go_final.txt", header=F, row.names=1,stringsAsFactors=F)
+> GO_info_listed = apply(GO_info, 1, function(x) unlist(strsplit(x,',')))
+> names(GO_info_listed) = rownames(GO_info)
+> get_GO_term_descr =  function(x) {
++     d = 'none';
++     go_info = GOTERM[[x]];
++     if (length(go_info) >0) { d = paste(Ontology(go_info), Term(go_info), sep=' ');}
++     return(d);
++ }
+> 
+> 
+> #organize go_id -> list of genes
+> GO_to_gene_list = list()
+> for (gene_id in intersect(names(GO_info_listed), sample_set_gene_ids)) {
++     go_list = GO_info_listed[[gene_id]]
++     for (go_id in go_list) {
++         GO_to_gene_list[[go_id]] = c(GO_to_gene_list[[go_id]], gene_id)
++     }
++ }
+> 
+> 
+> # GO-Seq protocol: build pwf based on ALL DE features
+> missing_gene_lengths = sample_set_gene_ids[! sample_set_gene_ids %in% rownames(gene_lengths)]
+> if (length(missing_gene_lengths) > 0) {
++      stop("Error, missing gene lengths for features: ", paste(missing_gene_lengths, collapse=', '))
++ }
+> sample_set_gene_lengths = gene_lengths[sample_set_gene_ids,]
+> GO_info_listed = GO_info_listed[ names(GO_info_listed) %in% sample_set_gene_ids ]
+> cat_genes_vec = as.integer(sample_set_gene_ids %in% rownames(factor_labeling))
+> pwf=nullp(cat_genes_vec, bias.data=sample_set_gene_lengths)
+> rownames(pwf) = sample_set_gene_ids
+> 
+> 
+> # perform functional enrichment testing for each category.
+> for (feature_cat in factor_list) {
++     message('Processing category: ', feature_cat)
++     gene_ids_in_feature_cat = rownames(factor_labeling)[factor_labeling$type == feature_cat]
++     cat_genes_vec = as.integer(sample_set_gene_ids %in% gene_ids_in_feature_cat)
++     pwf$DEgenes = cat_genes_vec
++     res = goseq(pwf,gene2cat=GO_info_listed, use_genes_without_cat=TRUE)
++     ## over-represented categories:
++      pvals = res$over_represented_pvalue
++      pvals[pvals > 1 - 1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$over_represented_FDR = q$qvalues
++ go_enrich_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_35DPI.edgeR.DE_results.P0.05_C2.DE.subset", '.GOseq.enriched', sep='')
++     result_table = res[res$over_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     result_table$gene_ids = do.call(rbind, lapply(result_table$category, function(x) { 
++             gene_list = GO_to_gene_list[[x]]
++             gene_list = gene_list[gene_list %in% gene_ids_in_feature_cat]
++             paste(gene_list, collapse=', ');
++      }) )
++     write.table(result_table[order(result_table$over_represented_pvalue),], file=go_enrich_filename, sep='	', quote=F, row.names=F)
++     ## under-represented categories:
++      pvals = res$under_represented_pvalue
++      pvals[pvals>1-1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$under_represented_FDR = q$qvalues
++     go_depleted_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_35DPI.edgeR.DE_results.P0.05_C2.DE.subset", '.GOseq.depleted', sep='')
++     result_table = res[res$under_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     write.table(result_table[order(result_table$under_represented_pvalue),], file=go_depleted_filename, sep='	', quote=F, row.names=F)
++ }
+> 
+> library(goseq)
+> library(GO.db)
+> library(qvalue)
+> # capture list of genes for functional enrichment testing
+> factor_labeling = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_7DPI.edgeR.DE_results.P0.05_C2.Gp_14DPI-UP.subset", row.names=1)
+> factor_labeling[,1] = rep('custom_list', dim(factor_labeling)[1])
+> factor_labeling = factor_labeling[,1,drop=F]
+> colnames(factor_labeling) = c('type')
+> factor_list = unique(factor_labeling[,1])
+> DE_genes = rownames(factor_labeling)
+> 
+> 
+> # get gene lengths
+> gene_lengths = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//gene_len_GO.txt", header=T, row.names=1, com='')
+> gene_lengths = as.matrix(gene_lengths[,1,drop=F])
+> 
+> 
+> # get background gene list
+> background = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_7DPI.edgeR.count_matrix", header=T, row.names=1)
+> background.gene_ids = rownames(background)
+> background.gene_ids = unique(c(background.gene_ids, DE_genes))
+> sample_set_gene_ids = background.gene_ids
+> 
+> 
+> # parse GO assignments
+> GO_info = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//Go_final.txt", header=F, row.names=1,stringsAsFactors=F)
+> GO_info_listed = apply(GO_info, 1, function(x) unlist(strsplit(x,',')))
+> names(GO_info_listed) = rownames(GO_info)
+> get_GO_term_descr =  function(x) {
++     d = 'none';
++     go_info = GOTERM[[x]];
++     if (length(go_info) >0) { d = paste(Ontology(go_info), Term(go_info), sep=' ');}
++     return(d);
++ }
+> 
+> 
+> #organize go_id -> list of genes
+> GO_to_gene_list = list()
+> for (gene_id in intersect(names(GO_info_listed), sample_set_gene_ids)) {
++     go_list = GO_info_listed[[gene_id]]
++     for (go_id in go_list) {
++         GO_to_gene_list[[go_id]] = c(GO_to_gene_list[[go_id]], gene_id)
++     }
++ }
+> 
+> 
+> # GO-Seq protocol: build pwf based on ALL DE features
+> missing_gene_lengths = sample_set_gene_ids[! sample_set_gene_ids %in% rownames(gene_lengths)]
+> if (length(missing_gene_lengths) > 0) {
++      stop("Error, missing gene lengths for features: ", paste(missing_gene_lengths, collapse=', '))
++ }
+> sample_set_gene_lengths = gene_lengths[sample_set_gene_ids,]
+> GO_info_listed = GO_info_listed[ names(GO_info_listed) %in% sample_set_gene_ids ]
+> cat_genes_vec = as.integer(sample_set_gene_ids %in% rownames(factor_labeling))
+> pwf=nullp(cat_genes_vec, bias.data=sample_set_gene_lengths)
+> rownames(pwf) = sample_set_gene_ids
+> 
+> 
+> # perform functional enrichment testing for each category.
+> for (feature_cat in factor_list) {
++     message('Processing category: ', feature_cat)
++     gene_ids_in_feature_cat = rownames(factor_labeling)[factor_labeling$type == feature_cat]
++     cat_genes_vec = as.integer(sample_set_gene_ids %in% gene_ids_in_feature_cat)
++     pwf$DEgenes = cat_genes_vec
++     res = goseq(pwf,gene2cat=GO_info_listed, use_genes_without_cat=TRUE)
++     ## over-represented categories:
++      pvals = res$over_represented_pvalue
++      pvals[pvals > 1 - 1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$over_represented_FDR = q$qvalues
++ go_enrich_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_7DPI.edgeR.DE_results.P0.05_C2.Gp_14DPI-UP.subset", '.GOseq.enriched', sep='')
++     result_table = res[res$over_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     result_table$gene_ids = do.call(rbind, lapply(result_table$category, function(x) { 
++             gene_list = GO_to_gene_list[[x]]
++             gene_list = gene_list[gene_list %in% gene_ids_in_feature_cat]
++             paste(gene_list, collapse=', ');
++      }) )
++     write.table(result_table[order(result_table$over_represented_pvalue),], file=go_enrich_filename, sep='	', quote=F, row.names=F)
++     ## under-represented categories:
++      pvals = res$under_represented_pvalue
++      pvals[pvals>1-1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$under_represented_FDR = q$qvalues
++     go_depleted_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_7DPI.edgeR.DE_results.P0.05_C2.Gp_14DPI-UP.subset", '.GOseq.depleted', sep='')
++     result_table = res[res$under_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     write.table(result_table[order(result_table$under_represented_pvalue),], file=go_depleted_filename, sep='	', quote=F, row.names=F)
++ }
+> 
+> library(goseq)
+> library(GO.db)
+> library(qvalue)
+> # capture list of genes for functional enrichment testing
+> factor_labeling = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_7DPI.edgeR.DE_results.P0.05_C2.Gp_7DPI-UP.subset", row.names=1)
+> factor_labeling[,1] = rep('custom_list', dim(factor_labeling)[1])
+> factor_labeling = factor_labeling[,1,drop=F]
+> colnames(factor_labeling) = c('type')
+> factor_list = unique(factor_labeling[,1])
+> DE_genes = rownames(factor_labeling)
+> 
+> 
+> # get gene lengths
+> gene_lengths = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//gene_len_GO.txt", header=T, row.names=1, com='')
+> gene_lengths = as.matrix(gene_lengths[,1,drop=F])
+> 
+> 
+> # get background gene list
+> background = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_7DPI.edgeR.count_matrix", header=T, row.names=1)
+> background.gene_ids = rownames(background)
+> background.gene_ids = unique(c(background.gene_ids, DE_genes))
+> sample_set_gene_ids = background.gene_ids
+> 
+> 
+> # parse GO assignments
+> GO_info = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//Go_final.txt", header=F, row.names=1,stringsAsFactors=F)
+> GO_info_listed = apply(GO_info, 1, function(x) unlist(strsplit(x,',')))
+> names(GO_info_listed) = rownames(GO_info)
+> get_GO_term_descr =  function(x) {
++     d = 'none';
++     go_info = GOTERM[[x]];
++     if (length(go_info) >0) { d = paste(Ontology(go_info), Term(go_info), sep=' ');}
++     return(d);
++ }
+> 
+> 
+> #organize go_id -> list of genes
+> GO_to_gene_list = list()
+> for (gene_id in intersect(names(GO_info_listed), sample_set_gene_ids)) {
++     go_list = GO_info_listed[[gene_id]]
++     for (go_id in go_list) {
++         GO_to_gene_list[[go_id]] = c(GO_to_gene_list[[go_id]], gene_id)
++     }
++ }
+> 
+> 
+> # GO-Seq protocol: build pwf based on ALL DE features
+> missing_gene_lengths = sample_set_gene_ids[! sample_set_gene_ids %in% rownames(gene_lengths)]
+> if (length(missing_gene_lengths) > 0) {
++      stop("Error, missing gene lengths for features: ", paste(missing_gene_lengths, collapse=', '))
++ }
+> sample_set_gene_lengths = gene_lengths[sample_set_gene_ids,]
+> GO_info_listed = GO_info_listed[ names(GO_info_listed) %in% sample_set_gene_ids ]
+> cat_genes_vec = as.integer(sample_set_gene_ids %in% rownames(factor_labeling))
+> pwf=nullp(cat_genes_vec, bias.data=sample_set_gene_lengths)
+> rownames(pwf) = sample_set_gene_ids
+> 
+> 
+> # perform functional enrichment testing for each category.
+> for (feature_cat in factor_list) {
++     message('Processing category: ', feature_cat)
++     gene_ids_in_feature_cat = rownames(factor_labeling)[factor_labeling$type == feature_cat]
++     cat_genes_vec = as.integer(sample_set_gene_ids %in% gene_ids_in_feature_cat)
++     pwf$DEgenes = cat_genes_vec
++     res = goseq(pwf,gene2cat=GO_info_listed, use_genes_without_cat=TRUE)
++     ## over-represented categories:
++      pvals = res$over_represented_pvalue
++      pvals[pvals > 1 - 1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$over_represented_FDR = q$qvalues
++ go_enrich_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_7DPI.edgeR.DE_results.P0.05_C2.Gp_7DPI-UP.subset", '.GOseq.enriched', sep='')
++     result_table = res[res$over_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     result_table$gene_ids = do.call(rbind, lapply(result_table$category, function(x) { 
++             gene_list = GO_to_gene_list[[x]]
++             gene_list = gene_list[gene_list %in% gene_ids_in_feature_cat]
++             paste(gene_list, collapse=', ');
++      }) )
++     write.table(result_table[order(result_table$over_represented_pvalue),], file=go_enrich_filename, sep='	', quote=F, row.names=F)
++     ## under-represented categories:
++      pvals = res$under_represented_pvalue
++      pvals[pvals>1-1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$under_represented_FDR = q$qvalues
++     go_depleted_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_7DPI.edgeR.DE_results.P0.05_C2.Gp_7DPI-UP.subset", '.GOseq.depleted', sep='')
++     result_table = res[res$under_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     write.table(result_table[order(result_table$under_represented_pvalue),], file=go_depleted_filename, sep='	', quote=F, row.names=F)
++ }
+> 
+> library(goseq)
+> library(GO.db)
+> library(qvalue)
+> # capture list of genes for functional enrichment testing
+> factor_labeling = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_7DPI.edgeR.DE_results.P0.05_C2.DE.subset", row.names=1)
+> factor_labeling[,1] = rep('custom_list', dim(factor_labeling)[1])
+> factor_labeling = factor_labeling[,1,drop=F]
+> colnames(factor_labeling) = c('type')
+> factor_list = unique(factor_labeling[,1])
+> DE_genes = rownames(factor_labeling)
+> 
+> 
+> # get gene lengths
+> gene_lengths = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//gene_len_GO.txt", header=T, row.names=1, com='')
+> gene_lengths = as.matrix(gene_lengths[,1,drop=F])
+> 
+> 
+> # get background gene list
+> background = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_7DPI.edgeR.count_matrix", header=T, row.names=1)
+> background.gene_ids = rownames(background)
+> background.gene_ids = unique(c(background.gene_ids, DE_genes))
+> sample_set_gene_ids = background.gene_ids
+> 
+> 
+> # parse GO assignments
+> GO_info = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//Go_final.txt", header=F, row.names=1,stringsAsFactors=F)
+> GO_info_listed = apply(GO_info, 1, function(x) unlist(strsplit(x,',')))
+> names(GO_info_listed) = rownames(GO_info)
+> get_GO_term_descr =  function(x) {
++     d = 'none';
++     go_info = GOTERM[[x]];
++     if (length(go_info) >0) { d = paste(Ontology(go_info), Term(go_info), sep=' ');}
++     return(d);
++ }
+> 
+> 
+> #organize go_id -> list of genes
+> GO_to_gene_list = list()
+> for (gene_id in intersect(names(GO_info_listed), sample_set_gene_ids)) {
++     go_list = GO_info_listed[[gene_id]]
++     for (go_id in go_list) {
++         GO_to_gene_list[[go_id]] = c(GO_to_gene_list[[go_id]], gene_id)
++     }
++ }
+> 
+> 
+> # GO-Seq protocol: build pwf based on ALL DE features
+> missing_gene_lengths = sample_set_gene_ids[! sample_set_gene_ids %in% rownames(gene_lengths)]
+> if (length(missing_gene_lengths) > 0) {
++      stop("Error, missing gene lengths for features: ", paste(missing_gene_lengths, collapse=', '))
++ }
+> sample_set_gene_lengths = gene_lengths[sample_set_gene_ids,]
+> GO_info_listed = GO_info_listed[ names(GO_info_listed) %in% sample_set_gene_ids ]
+> cat_genes_vec = as.integer(sample_set_gene_ids %in% rownames(factor_labeling))
+> pwf=nullp(cat_genes_vec, bias.data=sample_set_gene_lengths)
+> rownames(pwf) = sample_set_gene_ids
+> 
+> 
+> # perform functional enrichment testing for each category.
+> for (feature_cat in factor_list) {
++     message('Processing category: ', feature_cat)
++     gene_ids_in_feature_cat = rownames(factor_labeling)[factor_labeling$type == feature_cat]
++     cat_genes_vec = as.integer(sample_set_gene_ids %in% gene_ids_in_feature_cat)
++     pwf$DEgenes = cat_genes_vec
++     res = goseq(pwf,gene2cat=GO_info_listed, use_genes_without_cat=TRUE)
++     ## over-represented categories:
++      pvals = res$over_represented_pvalue
++      pvals[pvals > 1 - 1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$over_represented_FDR = q$qvalues
++ go_enrich_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_7DPI.edgeR.DE_results.P0.05_C2.DE.subset", '.GOseq.enriched', sep='')
++     result_table = res[res$over_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     result_table$gene_ids = do.call(rbind, lapply(result_table$category, function(x) { 
++             gene_list = GO_to_gene_list[[x]]
++             gene_list = gene_list[gene_list %in% gene_ids_in_feature_cat]
++             paste(gene_list, collapse=', ');
++      }) )
++     write.table(result_table[order(result_table$over_represented_pvalue),], file=go_enrich_filename, sep='	', quote=F, row.names=F)
++     ## under-represented categories:
++      pvals = res$under_represented_pvalue
++      pvals[pvals>1-1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$under_represented_FDR = q$qvalues
++     go_depleted_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_7DPI.edgeR.DE_results.P0.05_C2.DE.subset", '.GOseq.depleted', sep='')
++     result_table = res[res$under_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     write.table(result_table[order(result_table$under_represented_pvalue),], file=go_depleted_filename, sep='	', quote=F, row.names=F)
++ }
+> 
+> library(goseq)
+> library(GO.db)
+> library(qvalue)
+> # capture list of genes for functional enrichment testing
+> factor_labeling = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_EGG.edgeR.DE_results.P0.05_C2.Gp_14DPI-UP.subset", row.names=1)
+> factor_labeling[,1] = rep('custom_list', dim(factor_labeling)[1])
+> factor_labeling = factor_labeling[,1,drop=F]
+> colnames(factor_labeling) = c('type')
+> factor_list = unique(factor_labeling[,1])
+> DE_genes = rownames(factor_labeling)
+> 
+> 
+> # get gene lengths
+> gene_lengths = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//gene_len_GO.txt", header=T, row.names=1, com='')
+> gene_lengths = as.matrix(gene_lengths[,1,drop=F])
+> 
+> 
+> # get background gene list
+> background = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_EGG.edgeR.count_matrix", header=T, row.names=1)
+> background.gene_ids = rownames(background)
+> background.gene_ids = unique(c(background.gene_ids, DE_genes))
+> sample_set_gene_ids = background.gene_ids
+> 
+> 
+> # parse GO assignments
+> GO_info = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//Go_final.txt", header=F, row.names=1,stringsAsFactors=F)
+> GO_info_listed = apply(GO_info, 1, function(x) unlist(strsplit(x,',')))
+> names(GO_info_listed) = rownames(GO_info)
+> get_GO_term_descr =  function(x) {
++     d = 'none';
++     go_info = GOTERM[[x]];
++     if (length(go_info) >0) { d = paste(Ontology(go_info), Term(go_info), sep=' ');}
++     return(d);
++ }
+> 
+> 
+> #organize go_id -> list of genes
+> GO_to_gene_list = list()
+> for (gene_id in intersect(names(GO_info_listed), sample_set_gene_ids)) {
++     go_list = GO_info_listed[[gene_id]]
++     for (go_id in go_list) {
++         GO_to_gene_list[[go_id]] = c(GO_to_gene_list[[go_id]], gene_id)
++     }
++ }
+> 
+> 
+> # GO-Seq protocol: build pwf based on ALL DE features
+> missing_gene_lengths = sample_set_gene_ids[! sample_set_gene_ids %in% rownames(gene_lengths)]
+> if (length(missing_gene_lengths) > 0) {
++      stop("Error, missing gene lengths for features: ", paste(missing_gene_lengths, collapse=', '))
++ }
+> sample_set_gene_lengths = gene_lengths[sample_set_gene_ids,]
+> GO_info_listed = GO_info_listed[ names(GO_info_listed) %in% sample_set_gene_ids ]
+> cat_genes_vec = as.integer(sample_set_gene_ids %in% rownames(factor_labeling))
+> pwf=nullp(cat_genes_vec, bias.data=sample_set_gene_lengths)
+> rownames(pwf) = sample_set_gene_ids
+> 
+> 
+> # perform functional enrichment testing for each category.
+> for (feature_cat in factor_list) {
++     message('Processing category: ', feature_cat)
++     gene_ids_in_feature_cat = rownames(factor_labeling)[factor_labeling$type == feature_cat]
++     cat_genes_vec = as.integer(sample_set_gene_ids %in% gene_ids_in_feature_cat)
++     pwf$DEgenes = cat_genes_vec
++     res = goseq(pwf,gene2cat=GO_info_listed, use_genes_without_cat=TRUE)
++     ## over-represented categories:
++      pvals = res$over_represented_pvalue
++      pvals[pvals > 1 - 1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$over_represented_FDR = q$qvalues
++ go_enrich_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_EGG.edgeR.DE_results.P0.05_C2.Gp_14DPI-UP.subset", '.GOseq.enriched', sep='')
++     result_table = res[res$over_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     result_table$gene_ids = do.call(rbind, lapply(result_table$category, function(x) { 
++             gene_list = GO_to_gene_list[[x]]
++             gene_list = gene_list[gene_list %in% gene_ids_in_feature_cat]
++             paste(gene_list, collapse=', ');
++      }) )
++     write.table(result_table[order(result_table$over_represented_pvalue),], file=go_enrich_filename, sep='	', quote=F, row.names=F)
++     ## under-represented categories:
++      pvals = res$under_represented_pvalue
++      pvals[pvals>1-1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$under_represented_FDR = q$qvalues
++     go_depleted_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_EGG.edgeR.DE_results.P0.05_C2.Gp_14DPI-UP.subset", '.GOseq.depleted', sep='')
++     result_table = res[res$under_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     write.table(result_table[order(result_table$under_represented_pvalue),], file=go_depleted_filename, sep='	', quote=F, row.names=F)
++ }
+> 
+> library(goseq)
+> library(GO.db)
+> library(qvalue)
+> # capture list of genes for functional enrichment testing
+> factor_labeling = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_EGG.edgeR.DE_results.P0.05_C2.Gp_EGG-UP.subset", row.names=1)
+> factor_labeling[,1] = rep('custom_list', dim(factor_labeling)[1])
+> factor_labeling = factor_labeling[,1,drop=F]
+> colnames(factor_labeling) = c('type')
+> factor_list = unique(factor_labeling[,1])
+> DE_genes = rownames(factor_labeling)
+> 
+> 
+> # get gene lengths
+> gene_lengths = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//gene_len_GO.txt", header=T, row.names=1, com='')
+> gene_lengths = as.matrix(gene_lengths[,1,drop=F])
+> 
+> 
+> # get background gene list
+> background = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_EGG.edgeR.count_matrix", header=T, row.names=1)
+> background.gene_ids = rownames(background)
+> background.gene_ids = unique(c(background.gene_ids, DE_genes))
+> sample_set_gene_ids = background.gene_ids
+> 
+> 
+> # parse GO assignments
+> GO_info = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//Go_final.txt", header=F, row.names=1,stringsAsFactors=F)
+> GO_info_listed = apply(GO_info, 1, function(x) unlist(strsplit(x,',')))
+> names(GO_info_listed) = rownames(GO_info)
+> get_GO_term_descr =  function(x) {
++     d = 'none';
++     go_info = GOTERM[[x]];
++     if (length(go_info) >0) { d = paste(Ontology(go_info), Term(go_info), sep=' ');}
++     return(d);
++ }
+> 
+> 
+> #organize go_id -> list of genes
+> GO_to_gene_list = list()
+> for (gene_id in intersect(names(GO_info_listed), sample_set_gene_ids)) {
++     go_list = GO_info_listed[[gene_id]]
++     for (go_id in go_list) {
++         GO_to_gene_list[[go_id]] = c(GO_to_gene_list[[go_id]], gene_id)
++     }
++ }
+> 
+> 
+> # GO-Seq protocol: build pwf based on ALL DE features
+> missing_gene_lengths = sample_set_gene_ids[! sample_set_gene_ids %in% rownames(gene_lengths)]
+> if (length(missing_gene_lengths) > 0) {
++      stop("Error, missing gene lengths for features: ", paste(missing_gene_lengths, collapse=', '))
++ }
+> sample_set_gene_lengths = gene_lengths[sample_set_gene_ids,]
+> GO_info_listed = GO_info_listed[ names(GO_info_listed) %in% sample_set_gene_ids ]
+> cat_genes_vec = as.integer(sample_set_gene_ids %in% rownames(factor_labeling))
+> pwf=nullp(cat_genes_vec, bias.data=sample_set_gene_lengths)
+> rownames(pwf) = sample_set_gene_ids
+> 
+> 
+> # perform functional enrichment testing for each category.
+> for (feature_cat in factor_list) {
++     message('Processing category: ', feature_cat)
++     gene_ids_in_feature_cat = rownames(factor_labeling)[factor_labeling$type == feature_cat]
++     cat_genes_vec = as.integer(sample_set_gene_ids %in% gene_ids_in_feature_cat)
++     pwf$DEgenes = cat_genes_vec
++     res = goseq(pwf,gene2cat=GO_info_listed, use_genes_without_cat=TRUE)
++     ## over-represented categories:
++      pvals = res$over_represented_pvalue
++      pvals[pvals > 1 - 1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$over_represented_FDR = q$qvalues
++ go_enrich_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_EGG.edgeR.DE_results.P0.05_C2.Gp_EGG-UP.subset", '.GOseq.enriched', sep='')
++     result_table = res[res$over_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     result_table$gene_ids = do.call(rbind, lapply(result_table$category, function(x) { 
++             gene_list = GO_to_gene_list[[x]]
++             gene_list = gene_list[gene_list %in% gene_ids_in_feature_cat]
++             paste(gene_list, collapse=', ');
++      }) )
++     write.table(result_table[order(result_table$over_represented_pvalue),], file=go_enrich_filename, sep='	', quote=F, row.names=F)
++     ## under-represented categories:
++      pvals = res$under_represented_pvalue
++      pvals[pvals>1-1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$under_represented_FDR = q$qvalues
++     go_depleted_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_EGG.edgeR.DE_results.P0.05_C2.Gp_EGG-UP.subset", '.GOseq.depleted', sep='')
++     result_table = res[res$under_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     write.table(result_table[order(result_table$under_represented_pvalue),], file=go_depleted_filename, sep='	', quote=F, row.names=F)
++ }
+> 
+> library(goseq)
+> library(GO.db)
+> library(qvalue)
+> # capture list of genes for functional enrichment testing
+> factor_labeling = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_EGG.edgeR.DE_results.P0.05_C2.DE.subset", row.names=1)
+> factor_labeling[,1] = rep('custom_list', dim(factor_labeling)[1])
+> factor_labeling = factor_labeling[,1,drop=F]
+> colnames(factor_labeling) = c('type')
+> factor_list = unique(factor_labeling[,1])
+> DE_genes = rownames(factor_labeling)
+> 
+> 
+> # get gene lengths
+> gene_lengths = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//gene_len_GO.txt", header=T, row.names=1, com='')
+> gene_lengths = as.matrix(gene_lengths[,1,drop=F])
+> 
+> 
+> # get background gene list
+> background = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_EGG.edgeR.count_matrix", header=T, row.names=1)
+> background.gene_ids = rownames(background)
+> background.gene_ids = unique(c(background.gene_ids, DE_genes))
+> sample_set_gene_ids = background.gene_ids
+> 
+> 
+> # parse GO assignments
+> GO_info = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//Go_final.txt", header=F, row.names=1,stringsAsFactors=F)
+> GO_info_listed = apply(GO_info, 1, function(x) unlist(strsplit(x,',')))
+> names(GO_info_listed) = rownames(GO_info)
+> get_GO_term_descr =  function(x) {
++     d = 'none';
++     go_info = GOTERM[[x]];
++     if (length(go_info) >0) { d = paste(Ontology(go_info), Term(go_info), sep=' ');}
++     return(d);
++ }
+> 
+> 
+> #organize go_id -> list of genes
+> GO_to_gene_list = list()
+> for (gene_id in intersect(names(GO_info_listed), sample_set_gene_ids)) {
++     go_list = GO_info_listed[[gene_id]]
++     for (go_id in go_list) {
++         GO_to_gene_list[[go_id]] = c(GO_to_gene_list[[go_id]], gene_id)
++     }
++ }
+> 
+> 
+> # GO-Seq protocol: build pwf based on ALL DE features
+> missing_gene_lengths = sample_set_gene_ids[! sample_set_gene_ids %in% rownames(gene_lengths)]
+> if (length(missing_gene_lengths) > 0) {
++      stop("Error, missing gene lengths for features: ", paste(missing_gene_lengths, collapse=', '))
++ }
+> sample_set_gene_lengths = gene_lengths[sample_set_gene_ids,]
+> GO_info_listed = GO_info_listed[ names(GO_info_listed) %in% sample_set_gene_ids ]
+> cat_genes_vec = as.integer(sample_set_gene_ids %in% rownames(factor_labeling))
+> pwf=nullp(cat_genes_vec, bias.data=sample_set_gene_lengths)
+> rownames(pwf) = sample_set_gene_ids
+> 
+> 
+> # perform functional enrichment testing for each category.
+> for (feature_cat in factor_list) {
++     message('Processing category: ', feature_cat)
++     gene_ids_in_feature_cat = rownames(factor_labeling)[factor_labeling$type == feature_cat]
++     cat_genes_vec = as.integer(sample_set_gene_ids %in% gene_ids_in_feature_cat)
++     pwf$DEgenes = cat_genes_vec
++     res = goseq(pwf,gene2cat=GO_info_listed, use_genes_without_cat=TRUE)
++     ## over-represented categories:
++      pvals = res$over_represented_pvalue
++      pvals[pvals > 1 - 1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$over_represented_FDR = q$qvalues
++ go_enrich_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_EGG.edgeR.DE_results.P0.05_C2.DE.subset", '.GOseq.enriched', sep='')
++     result_table = res[res$over_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     result_table$gene_ids = do.call(rbind, lapply(result_table$category, function(x) { 
++             gene_list = GO_to_gene_list[[x]]
++             gene_list = gene_list[gene_list %in% gene_ids_in_feature_cat]
++             paste(gene_list, collapse=', ');
++      }) )
++     write.table(result_table[order(result_table$over_represented_pvalue),], file=go_enrich_filename, sep='	', quote=F, row.names=F)
++     ## under-represented categories:
++      pvals = res$under_represented_pvalue
++      pvals[pvals>1-1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$under_represented_FDR = q$qvalues
++     go_depleted_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_EGG.edgeR.DE_results.P0.05_C2.DE.subset", '.GOseq.depleted', sep='')
++     result_table = res[res$under_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     write.table(result_table[order(result_table$under_represented_pvalue),], file=go_depleted_filename, sep='	', quote=F, row.names=F)
++ }
+> 
+> library(goseq)
+> library(GO.db)
+> library(qvalue)
+> # capture list of genes for functional enrichment testing
+> factor_labeling = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_J2.edgeR.DE_results.P0.05_C2.Gp_14DPI-UP.subset", row.names=1)
+> factor_labeling[,1] = rep('custom_list', dim(factor_labeling)[1])
+> factor_labeling = factor_labeling[,1,drop=F]
+> colnames(factor_labeling) = c('type')
+> factor_list = unique(factor_labeling[,1])
+> DE_genes = rownames(factor_labeling)
+> 
+> 
+> # get gene lengths
+> gene_lengths = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//gene_len_GO.txt", header=T, row.names=1, com='')
+> gene_lengths = as.matrix(gene_lengths[,1,drop=F])
+> 
+> 
+> # get background gene list
+> background = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_J2.edgeR.count_matrix", header=T, row.names=1)
+> background.gene_ids = rownames(background)
+> background.gene_ids = unique(c(background.gene_ids, DE_genes))
+> sample_set_gene_ids = background.gene_ids
+> 
+> 
+> # parse GO assignments
+> GO_info = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//Go_final.txt", header=F, row.names=1,stringsAsFactors=F)
+> GO_info_listed = apply(GO_info, 1, function(x) unlist(strsplit(x,',')))
+> names(GO_info_listed) = rownames(GO_info)
+> get_GO_term_descr =  function(x) {
++     d = 'none';
++     go_info = GOTERM[[x]];
++     if (length(go_info) >0) { d = paste(Ontology(go_info), Term(go_info), sep=' ');}
++     return(d);
++ }
+> 
+> 
+> #organize go_id -> list of genes
+> GO_to_gene_list = list()
+> for (gene_id in intersect(names(GO_info_listed), sample_set_gene_ids)) {
++     go_list = GO_info_listed[[gene_id]]
++     for (go_id in go_list) {
++         GO_to_gene_list[[go_id]] = c(GO_to_gene_list[[go_id]], gene_id)
++     }
++ }
+> 
+> 
+> # GO-Seq protocol: build pwf based on ALL DE features
+> missing_gene_lengths = sample_set_gene_ids[! sample_set_gene_ids %in% rownames(gene_lengths)]
+> if (length(missing_gene_lengths) > 0) {
++      stop("Error, missing gene lengths for features: ", paste(missing_gene_lengths, collapse=', '))
++ }
+> sample_set_gene_lengths = gene_lengths[sample_set_gene_ids,]
+> GO_info_listed = GO_info_listed[ names(GO_info_listed) %in% sample_set_gene_ids ]
+> cat_genes_vec = as.integer(sample_set_gene_ids %in% rownames(factor_labeling))
+> pwf=nullp(cat_genes_vec, bias.data=sample_set_gene_lengths)
+> rownames(pwf) = sample_set_gene_ids
+> 
+> 
+> # perform functional enrichment testing for each category.
+> for (feature_cat in factor_list) {
++     message('Processing category: ', feature_cat)
++     gene_ids_in_feature_cat = rownames(factor_labeling)[factor_labeling$type == feature_cat]
++     cat_genes_vec = as.integer(sample_set_gene_ids %in% gene_ids_in_feature_cat)
++     pwf$DEgenes = cat_genes_vec
++     res = goseq(pwf,gene2cat=GO_info_listed, use_genes_without_cat=TRUE)
++     ## over-represented categories:
++      pvals = res$over_represented_pvalue
++      pvals[pvals > 1 - 1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$over_represented_FDR = q$qvalues
++ go_enrich_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_J2.edgeR.DE_results.P0.05_C2.Gp_14DPI-UP.subset", '.GOseq.enriched', sep='')
++     result_table = res[res$over_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     result_table$gene_ids = do.call(rbind, lapply(result_table$category, function(x) { 
++             gene_list = GO_to_gene_list[[x]]
++             gene_list = gene_list[gene_list %in% gene_ids_in_feature_cat]
++             paste(gene_list, collapse=', ');
++      }) )
++     write.table(result_table[order(result_table$over_represented_pvalue),], file=go_enrich_filename, sep='	', quote=F, row.names=F)
++     ## under-represented categories:
++      pvals = res$under_represented_pvalue
++      pvals[pvals>1-1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$under_represented_FDR = q$qvalues
++     go_depleted_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_J2.edgeR.DE_results.P0.05_C2.Gp_14DPI-UP.subset", '.GOseq.depleted', sep='')
++     result_table = res[res$under_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     write.table(result_table[order(result_table$under_represented_pvalue),], file=go_depleted_filename, sep='	', quote=F, row.names=F)
++ }
+> 
+> library(goseq)
+> library(GO.db)
+> library(qvalue)
+> # capture list of genes for functional enrichment testing
+> factor_labeling = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_J2.edgeR.DE_results.P0.05_C2.Gp_J2-UP.subset", row.names=1)
+> factor_labeling[,1] = rep('custom_list', dim(factor_labeling)[1])
+> factor_labeling = factor_labeling[,1,drop=F]
+> colnames(factor_labeling) = c('type')
+> factor_list = unique(factor_labeling[,1])
+> DE_genes = rownames(factor_labeling)
+> 
+> 
+> # get gene lengths
+> gene_lengths = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//gene_len_GO.txt", header=T, row.names=1, com='')
+> gene_lengths = as.matrix(gene_lengths[,1,drop=F])
+> 
+> 
+> # get background gene list
+> background = read.table("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_J2.edgeR.count_matrix", header=T, row.names=1)
+> background.gene_ids = rownames(background)
+> background.gene_ids = unique(c(background.gene_ids, DE_genes))
+> sample_set_gene_ids = background.gene_ids
+> 
+> 
+> # parse GO assignments
+> GO_info = read.table("/storage/home/users/pjt6/newton/final_genome2/RNAseq_mapping/DE_analysis/DE_with_GO_enrichment//Go_final.txt", header=F, row.names=1,stringsAsFactors=F)
+> GO_info_listed = apply(GO_info, 1, function(x) unlist(strsplit(x,',')))
+> names(GO_info_listed) = rownames(GO_info)
+> get_GO_term_descr =  function(x) {
++     d = 'none';
++     go_info = GOTERM[[x]];
++     if (length(go_info) >0) { d = paste(Ontology(go_info), Term(go_info), sep=' ');}
++     return(d);
++ }
+> 
+> 
+> #organize go_id -> list of genes
+> GO_to_gene_list = list()
+> for (gene_id in intersect(names(GO_info_listed), sample_set_gene_ids)) {
++     go_list = GO_info_listed[[gene_id]]
++     for (go_id in go_list) {
++         GO_to_gene_list[[go_id]] = c(GO_to_gene_list[[go_id]], gene_id)
++     }
++ }
+> 
+> 
+> # GO-Seq protocol: build pwf based on ALL DE features
+> missing_gene_lengths = sample_set_gene_ids[! sample_set_gene_ids %in% rownames(gene_lengths)]
+> if (length(missing_gene_lengths) > 0) {
++      stop("Error, missing gene lengths for features: ", paste(missing_gene_lengths, collapse=', '))
++ }
+> sample_set_gene_lengths = gene_lengths[sample_set_gene_ids,]
+> GO_info_listed = GO_info_listed[ names(GO_info_listed) %in% sample_set_gene_ids ]
+> cat_genes_vec = as.integer(sample_set_gene_ids %in% rownames(factor_labeling))
+> pwf=nullp(cat_genes_vec, bias.data=sample_set_gene_lengths)
+> rownames(pwf) = sample_set_gene_ids
+> 
+> 
+> # perform functional enrichment testing for each category.
+> for (feature_cat in factor_list) {
++     message('Processing category: ', feature_cat)
++     gene_ids_in_feature_cat = rownames(factor_labeling)[factor_labeling$type == feature_cat]
++     cat_genes_vec = as.integer(sample_set_gene_ids %in% gene_ids_in_feature_cat)
++     pwf$DEgenes = cat_genes_vec
++     res = goseq(pwf,gene2cat=GO_info_listed, use_genes_without_cat=TRUE)
++     ## over-represented categories:
++      pvals = res$over_represented_pvalue
++      pvals[pvals > 1 - 1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$over_represented_FDR = q$qvalues
++ go_enrich_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_J2.edgeR.DE_results.P0.05_C2.Gp_J2-UP.subset", '.GOseq.enriched', sep='')
++     result_table = res[res$over_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     result_table$gene_ids = do.call(rbind, lapply(result_table$category, function(x) { 
++             gene_list = GO_to_gene_list[[x]]
++             gene_list = gene_list[gene_list %in% gene_ids_in_feature_cat]
++             paste(gene_list, collapse=', ');
++      }) )
++     write.table(result_table[order(result_table$over_represented_pvalue),], file=go_enrich_filename, sep='	', quote=F, row.names=F)
++     ## under-represented categories:
++      pvals = res$under_represented_pvalue
++      pvals[pvals>1-1e-10] = 1 - 1e-10
++      q = qvalue(pvals)
++      res$under_represented_FDR = q$qvalues
++     go_depleted_filename = paste("Gp_genes.counts.matrix.Gp_14DPI_vs_Gp_J2.edgeR.DE_results.P0.05_C2.Gp_J2-UP.subset", '.GOseq.depleted', sep='')
++     result_table = res[res$under_represented_pvalue<=0.05,]
++     descr = unlist(lapply(result_table$category, get_GO_term_descr))
++     result_table$go_term = descr;
++     write.table(result_table[order(result_table$under_represented_pvalue),], file=go_depleted_filename, sep='	', quote=F, row.names=F)
++ }
