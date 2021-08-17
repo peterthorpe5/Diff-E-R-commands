@@ -8,8 +8,7 @@ BiocManager::install(version = "3.13")
 # Step 1: load the sample CSV file
 # The CSV file columns are labeled with the sample IDs so they can be passed
 # to DRIMSeq later
-samples <- read.csv(file.path("/users/pa/bioinformatics/DTU_Analysis",
-                              "samples.csv"))
+samples <- read.table("sample.txt", header=TRUE, sep="\t")
 samples
 
 # Convert the conditions vector from the samples file to a factor data type
@@ -17,8 +16,7 @@ samples$condition <- factor(samples$condition)
 table(samples$condition)
 
 # Obtain the file path to each of the samples
-files <- file.path("/users/pa/bioinformatics/DTU_Analysis/salmon_transcript_quant",
-                   samples$sample_id, "quant.sf")
+files <- file.path(samples$sample_id, "quant.sf2")
 names(files) <- samples$sample_id
 head (files)
 
@@ -35,8 +33,8 @@ head(cts)
 # their parent genes
 BiocManager::install("GenomicFeatures")
 library(GenomicFeatures)
-st.dir        <- "/users/pa/bioinformatics/DTU_Analysis/"
-gtf           <- paste(st.dir, sep = "", "Mus_musculus.GRCm38.84.gtf.gz")
+st.dir        <- "/storage/home/users/pjt6/mouse/"
+gtf           <- paste(st.dir, sep = "", "Mus_musculus.GRCm38.84.gtf")
 txdb.filename <- paste(st.dir, sep = "", "Mus_musculus.GRCm38.84.sqlite")
 txdb <- makeTxDbFromGFF(gtf)
 saveDb (txdb, txdb.filename)
@@ -55,6 +53,10 @@ txdf$ntx <- tab[match(txdf$GENEID, names(tab))]
 # Create a data frame with the gene ID, transcript (feature) ID, and columns
 # for (counts from) each of the samples
 all(rownames(cts) %in% txdf$TXNAME)  # %in% indicates whether TXNAME matches
+# the all does not work here:
+
+rownames(cts) %in% txdf$TXNAME  # %in% indicates whether TXNAME matches
+
 # a row name in counts
 txdf   <- txdf[match(rownames(cts), txdf$TXNAME),]
 all(rownames(cts) == txdf$TXNAME)
