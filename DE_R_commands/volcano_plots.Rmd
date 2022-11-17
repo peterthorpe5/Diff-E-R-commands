@@ -1,0 +1,315 @@
+---
+title: "HLphyDis3 DE gene analysis"
+author: "Peter Thorpe"
+date: "13/08/2021"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(comment = NA)
+error = TRUE
+
+```
+
+#0.1 QC! 
+
+see Word document. There is a collection of graphs from multiple sources, how the counts were created 
+
+##load the libs needed 
+
+
+```{r}
+library(tidyverse)
+library(DESeq2) # not used, yet(?)
+library(plotly)
+library(ggplot2)
+library(tidyverse)
+library(ggrepel)
+library(htmlwidgets)
+library(edgeR)
+library(tibble)
+library(data.table)
+#library(sva:)  # sva is combat-seq
+
+#########################################
+
+plot some volcao plots
+
+```{r}
+
+library(plotly)
+library(ggplot2)
+library(tidyverse)
+library(ggrepel)
+library(htmlwidgets)
+
+
+
+```
+
+
+```{r}
+
+# custom thresholds
+Pthreshold <- 0.05
+logFC_threshold <- 1.6
+
+```
+
+```{r}
+
+# make a new column if the gene is sig yes or no
+temp_data <- ""
+
+temp_data <- read.table("GFP_Cortex_vs_GFP_Striatum.GLM.edgeR.DE_results", header=T, sep="\t")
+
+temp_data$Significant<-ifelse(temp_data$PValue <=Pthreshold, "Yes", "No")
+
+temp_data <- as_tibble(temp_data)
+
+temp_data %>% 
+  rename(gene_id = Row.names)
+
+names(temp_data)[names(temp_data) == "Row.names"] <- "gene_id"
+
+```
+
+```{r}
+# assign ggplot to var called volc
+volc <- NA
+
+volc <- ggplot(data=temp_data, aes(logFC, -log10(PValue), label=gene_id)) +
+   geom_point(aes(col=Significant))  +
+  geom_text_repel(aes(label=ifelse(abs(logFC >= logFC_threshold) 
+                       & PValue < Pthreshold, as.character(gene_id), ""))) +
+  theme_grey() +
+  geom_vline(xintercept=c(logFC_threshold,-logFC_threshold),
+             linetype = "dashed") +
+  geom_hline(yintercept = -log10(Pthreshold), linetype = "dashed") +
+  scale_color_manual(values = c("black","red"))
+  
+# can save voc as a standard image if required 
+# this is the interactive pacakge
+
+```
+
+```{r}
+ggplotly(volc)
+
+# save it to html
+
+g_plotly<-ggplotly(volc)
+saveWidget(g_plotly, "GFP_Cortex_vs_GFP_Striatum.GLM.edgeR.html")
+
+df <- temp_data %>%
+  filter(Significant == "Yes")
+
+
+print("number DE genes:")
+nrow(df)
+
+
+write.table(df, file='GFP_Cortex_vs_GFP_Striatum.GLM.edgeR.LOGFC1.6_FDR0.05.txt',
+            sep='\t', quote=F, row.names=T,col.names = NA)
+
+
+
+
+```
+
+
+
+```{r}
+
+# make a new column if the gene is sig yes or no
+temp_data <- ""
+
+temp_data <- read.table("KI_striatum_vs_all_GFP_samples.GLM.edgeR.DE_results", header=T, sep="\t")
+
+temp_data$Significant<-ifelse(temp_data$PValue <=Pthreshold, "Yes", "No")
+
+temp_data <- as_tibble(temp_data)
+
+temp_data %>% 
+  rename(gene_id = Row.names)
+  
+names(temp_data)[names(temp_data) == "Row.names"] <- "gene_id"
+
+```
+
+```{r}
+
+# assign ggplot to var called volc
+volc <- NA
+
+volc <- ggplot(data=temp_data, aes(logFC, -log10(PValue), label=gene_id)) +
+   geom_point(aes(col=Significant))  +
+  geom_text_repel(aes(label=ifelse(abs(logFC >= logFC_threshold) 
+                       & PValue < Pthreshold, as.character(gene_id), ""))) +
+  theme_grey() +
+  geom_vline(xintercept=c(logFC_threshold,-logFC_threshold),
+             linetype = "dashed") +
+  geom_hline(yintercept = -log10(Pthreshold), linetype = "dashed") +
+  scale_color_manual(values = c("black","red"))
+
+
+```
+
+```{r}
+
+# can save voc as a standard image if required 
+# this is the interactive pacakge
+ggplotly(volc)
+
+# save it to html
+library(htmlwidgets)
+
+g_plotly<-ggplotly(volc)
+saveWidget(g_plotly, "KI_striatum_vs_all_GFP_samples.GLM.edgeR.DE_results.html")
+
+
+df <- temp_data %>%
+  filter(Significant == "Yes")
+
+print("number DE genes:")
+nrow(df)
+
+write.table(df, file='KI_striatum_vs_all_GFP_samples.GLM.edgeR.LOGFC1.6_FDR0.05.txt',
+            sep='\t', quote=F, row.names=T,col.names = NA)
+
+
+```
+
+
+```{r}
+
+```{r}
+
+# make a new column if the gene is sig yes or no
+temp_data <- ""
+
+temp_data <- read.table("GFP_striatum_vs_KI_striatum.GLM.edgeR.DE_results", header=T, sep="\t")
+
+temp_data$Significant<-ifelse(temp_data$PValue <=Pthreshold, "Yes", "No")
+
+temp_data <- as_tibble(temp_data)
+
+temp_data %>% 
+  rename(gene_id = Row.names)
+  
+names(temp_data)[names(temp_data) == "Row.names"] <- "gene_id"
+
+```
+
+```{r}
+
+# assign ggplot to var called volc
+volc <- NA
+
+volc <- ggplot(data=temp_data, aes(logFC, -log10(PValue), label=gene_id)) +
+   geom_point(aes(col=Significant))  +
+  geom_text_repel(aes(label=ifelse(abs(logFC >= logFC_threshold) 
+                       & PValue < Pthreshold, as.character(gene_id), ""))) +
+  theme_grey() +
+  geom_vline(xintercept=c(logFC_threshold,-logFC_threshold),
+             linetype = "dashed") +
+  geom_hline(yintercept = -log10(Pthreshold), linetype = "dashed") +
+  scale_color_manual(values = c("black","red"))
+
+
+```
+
+```{r}
+
+# can save voc as a standard image if required 
+# this is the interactive pacakge
+ggplotly(volc)
+
+# save it to html
+library(htmlwidgets)
+
+g_plotly<-ggplotly(volc)
+saveWidget(g_plotly, "GFP_striatum_vs_KI_striatum.GLM.edgeR.DE_results.html")
+
+
+
+df <- temp_data %>%
+  filter(Significant == "Yes")
+
+print("number DE genes:")
+nrow(df)
+
+write.table(df, file='GFP_striatum_vs_KI_striatum.GLM.edgeR.LOGFC1.6_FDR0.05.txt',
+            sep='\t', quote=F, row.names=T,col.names = NA)
+
+
+```
+
+
+
+```{r}
+``{r}
+
+# make a new column if the gene is sig yes or no
+temp_data <- ""
+
+temp_data <- read.table("GFP_cortex_vs_KI_cortex.GLM.edgeR.DE_results", header=T, sep="\t")
+
+temp_data <- as_tibble(temp_data)
+
+temp_data %>% 
+  rename(gene_id = Row.names)
+ 
+names(temp_data)[names(temp_data) == "Row.names"] <- "gene_id"
+
+```
+
+```{r}
+
+temp_data$Significant<-ifelse(temp_data$PValue <=Pthreshold, "Yes", "No")
+
+# assign ggplot to var called volc
+volc <- NA
+
+volc <- ggplot(data=temp_data, aes(logFC, -log10(PValue), label=gene_id)) +
+   geom_point(aes(col=Significant))  +
+  geom_text_repel(aes(label=ifelse(abs(logFC >= logFC_threshold) 
+                       & PValue < Pthreshold, as.character(gene_id), ""))) +
+  theme_grey() +
+  geom_vline(xintercept=c(logFC_threshold,-logFC_threshold),
+             linetype = "dashed") +
+  geom_hline(yintercept = -log10(Pthreshold), linetype = "dashed") +
+  scale_color_manual(values = c("black","red"))
+
+
+```
+
+```{r}
+
+# can save voc as a standard image if required 
+# this is the interactive pacakge
+ggplotly(volc)
+
+# save it to html
+library(htmlwidgets)
+
+g_plotly<-ggplotly(volc)
+saveWidget(g_plotly, "GFP_cortex_vs_KI_cortex.GLM.edgeR.DE_results.html")
+
+
+
+df <- temp_data %>%
+  filter(Significant == "Yes")
+
+print("number DE genes:")
+nrow(df)
+
+write.table(df, file='GFP_cortex_vs_KI_cortex.GLM.edgeR.LOGFC1.6_FDR0.05.txt',
+            sep='\t', quote=F, row.names=T,col.names = NA)
+
+
+
+```
+

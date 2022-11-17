@@ -1,0 +1,463 @@
+---
+title: "HLphyDis3 DE gene analysis"
+author: "Peter Thorpe"
+date: "13/08/2021"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(comment = NA)
+error = TRUE
+
+```
+
+#0.1 QC! 
+
+see Word document. There is a collection of graphs from multiple sources, how the counts were created 
+
+##load the libs needed 
+
+
+```{r}
+library(tidyverse)
+library(DESeq2) # not used, yet(?)
+library(plotly)
+library(ggplot2)
+library(tidyverse)
+library(ggrepel)
+library(htmlwidgets)
+library(edgeR)
+library(tibble)
+library(data.table)
+#library(sva:)  # sva is combat-seq
+
+```
+
+combatseq for sequencing batch correction
+
+```{r}
+# install.packages("devtools")
+#devtools::install_github("zhangyuqing/sva-devel")
+```
+
+
+
+#0.2 load the data
+
+counts were already generated using salmon and counts.matrix generated using trinity. 
+
+```{r}
+setwd("C:/Users/pjt6/Documents/bat_RNAseq/Batch3_and_batch2")
+
+cts <- read.delim("HLphyDis3.genes.counts.matrix.isoform.counts.matrix", 
+                  header=T, row.names=1)
+
+coldata = read.table("metadata_2.txt", header=T, com='', 
+                      sep="\t", check.names=F, row.names=1)
+
+
+```
+
+
+have a quick look at the data:
+
+```{r}
+head(cts)
+
+```
+
+```{r}
+head(coldata)
+```
+
+
+convert to factors
+
+```{r}
+
+coldata <- coldata[,c("condition", "animal", "side","Age_of_bat",
+                      "seq_batch", "reps")]
+coldata$condition <- factor(coldata$condition)
+coldata$animal <- factor(coldata$animal)
+coldata$side <- factor(coldata$side)
+coldata$Age_of_bat <- factor(coldata$Age_of_bat)
+coldata$reps <- factor(coldata$reps)
+animal <- factor(coldata$animal)
+condition <- factor(coldata$condition)
+seq_batch <- factor(coldata$seq_batch)
+
+```
+
+check that the order of the table and the colomns in the counts.matrix march, if not, then fix:
+
+```{r}
+
+all(rownames(coldata) %in% colnames(cts))
+# TRUE
+
+rownames(coldata) <-  rownames(coldata)
+
+all(rownames(coldata) == colnames(cts))
+# FALSE
+
+cts <- cts[, rownames(coldata)]
+
+all(rownames(coldata) == colnames(cts))
+# TRUE
+cts <- cts[, rownames(coldata)]
+all(rownames(coldata) == colnames(cts))
+
+```
+
+
+try combat-seq to try and batch correct for sequencing batches. 
+https://academic.oup.com/nargab/article/2/3/lqaa078/5909519
+https://github.com/zhangyuqing/ComBat-seq
+
+Basic usage (users need to input at least two parameters - a raw count matrix from RNA-Seq studies, 
+without any normalization or transformation, and a vector for batch separation):
+
+In ComBat-seq, user may specify biological covariates, whose signals will be preserved in 
+the adjusted data. If the user would like to specify one biological variable, 
+they may use the group parameter:
+
+```{r}
+
+source("ComBat_seq.R")
+source("helper_seq.R")
+
+group=c('GFP_auditory_Cortex', 'GFP_auditory_Cortex', 'GFP_auditory_Cortex', 
+        'GFP_auditory_Cortex', 'GFP_Cortex', 'GFP_Cortex', 'GFP_Cortex', '
+        GFP_Cortex', 'GFP_Striatum', 'GFP_Striatum', 'GFP_Striatum', 
+        'GFP_Striatum', 'GFP_Striatum', 'KI_auditory_Cortex', 'KI_auditory_Cortex', 
+        'KI_auditory_Cortex', 'KI_auditory_Cortex', 'KI_Cortex', 'KI_Cortex', 
+        'KI_Cortex', 'KI_Cortex', 'KI_Striatum', 'KI_Striatum', 'KI_Striatum', 
+        'KI_Striatum', 'KI_Striatum')
+
+# group is the reps -  this is so it trys to keep the 
+# biological info. 
+adjusted <- ComBat_seq(cts, batch=seq_batch, group=group)
+
+write.table(adjusted, file='HLphyDis3.seq_batch_adjusted.counts.matrix', 
+            sep='\t', 
+            quote=F, row.names=T, col.names = NA)
+
+
+adjusted_for_animal <- ComBat_seq(cts, batch=animal, group=group)
+
+write.table(adjusted_for_animal, file='HLphyDis3.animal_batch_adjusted.counts.matrix',
+            sep='\t', 
+            quote=F, row.names=T, col.names = NA)
+
+
+adjusted_for_animal_seq_batch <- ComBat_seq(adjusted_for_animal, batch=seq_batch, group=group)
+
+write.table(adjusted_for_animal_seq_batch,
+            file='HLphyDis3.animal_and_seq_batch_adjusted.counts.matrix',
+            sep='\t', 
+            quote=F, row.names=T, col.names = NA)
+
+#cts <- adjusted
+
+```
+
+having looked at the PCA. The correction by seq batch will be the one taken forward. 
+
+```{r}
+cts <- adjusted
+
+```
+
+
+explicitly set up the group (yes, this is contained in the table!)
+
+```{r}
+
+# specified above
+
+```
+
+
+#0.3 R Packages now to start using edgeR to do some analysis: https://bioconductor.org/packages/release/bioc/vignettes/edgeR/inst/doc/edgeR.pdf
+
+
+```{r}
+y <- DGEList(counts=cts, group=group)
+condition<-coldata$condition # just so I dont have to keep using dollars :)
+
+```
+
+
+filter low expressing genes. Stats perfomred in a larger number, when lots are zero to low expressing negatively impacts on the data. 5,640 genes dropped from the analysis. 
+
+```{r}
+keep <- filterByExpr(y)
+table(keep)
+
+```
+
+calculate nomrlaisation factors and normalise the data for lib depth differences
+
+```{r}
+y <- y[keep, , keep.lib.sizes=FALSE]
+#The TMM normalization is applied to account for the compositional biases:
+y <- calcNormFactors(y)
+y$samples
+
+```
+
+
+following this https://support.bioconductor.org/p/56637/ with a problem with y, see the fix at the webpage. Reasign to d:
+
+```{r}
+d <- DGEList(counts=y,group=group)
+keep <- filterByExpr(d)
+table(keep)
+d <- d[keep, , keep.lib.sizes=FALSE]
+d <- calcNormFactors(d)
+
+plotMDS(d)
+```
+
+
+Before we fit GLMs, we need to define our design matrix based on the experimental design. 
+We want to test for differential expressions between our conditions within batches, i.e. adjusting for differences between batches. In statistical terms,
+this is an additive linear model. So the design matrix is created as:
+
+```{r}
+design <- model.matrix(~animal+condition)
+
+rownames(design) <- colnames(d)
+
+design
+
+```
+
+
+run the DE analysis:
+
+```{r}
+d <- estimateDisp(d,design)
+
+# this GLM is better for low numbers of reps.
+ fit <- glmQLFit(d, design)
+ 
+```
+
+#0.4 specific comparisons
+To do the specific comparisons: GFP_Cortex_vs_GFP_Striatum.
+Coefficient:  (Intercept) groupGFP_Cortex groupGFP_Striatum groupKI_auditory_Cortex groupKI_Cortex groupKI_Striatum 
+
+```{r}
+
+my.contrasts <- makeContrasts(GFP_cortex_vs_KI_cortex = conditionGFP_Cortex - conditionKI_Cortex, 
+                              KI_auditory_Cortex_vs_KI_Cortex = conditionKI_auditory_Cortex - conditionKI_Cortex,
+                            GFP_striatum_vs_KI_striatum = conditionGFP_Striatum - conditionKI_Striatum,    
+                            GFP_Cortex_vs_KI_auditory_Cortex = conditionGFP_Cortex - conditionKI_auditory_Cortex,
+                            GFP_Cortex_vs_GFP_Striatum = conditionGFP_Cortex - conditionGFP_Striatum,  levels=design)
+
+
+```
+
+get the pair wise comparisons. 
+# GFP_cortex_vs_KI_cortex
+
+```{r}
+# GFP_cortex_vs_KI_cortex
+qlf <- glmQLFTest(fit, contrast=my.contrasts[,"GFP_cortex_vs_KI_cortex"])
+
+tTags = topTags(qlf,n=NULL)
+
+result_table = tTags$table
+
+result_table = data.frame(sampleA="GFP_cortex", sampleB="KI_cortex", result_table)
+result_table = merge(result_table, cts,by="row.names",all.x=TRUE)
+result_table <- result_table[order(result_table$logFC),]
+
+#result_table$logFC = -1 * result_table$logFC
+
+
+
+write.table(result_table, file='GFP_cortex_vs_KI_cortex.GLM.edgeR.DE_results',
+            sep='\t', quote=F, row.names=T, col.names = NA)
+
+
+
+```
+
+
+KI_auditory_Cortex_vs_KI_Cortex
+
+```{r}
+# KI_auditory_Cortex_vs_KI_Cortex
+qlf <- glmQLFTest(fit, contrast=my.contrasts[,"KI_auditory_Cortex_vs_KI_Cortex"]) 
+
+tTags = topTags(qlf,n=NULL)
+
+result_table = tTags$table
+
+result_table = data.frame(sampleA="KI_auditory_Cortex", sampleB="KI_Cortex", result_table)
+result_table = merge(result_table, cts,by="row.names",all.x=TRUE)
+result_table <- result_table[order(result_table$logFC),]
+
+#result_table$logFC = -1 * result_table$logFC
+
+write.table(result_table, file='KI_auditory_Cortex_vs_KI_Cortex.GLM.edgeR.DE_results', 
+            sep='\t', quote=F, row.names=T, col.names = NA)
+```
+
+
+GFP_striatum_vs_KI_striatum
+```{r}
+# GFP_striatum_vs_KI_striatum
+
+qlf <- glmQLFTest(fit, contrast=my.contrasts[,"GFP_striatum_vs_KI_striatum"]) 
+
+tTags = topTags(qlf,n=NULL)
+
+result_table = tTags$table
+
+result_table = data.frame(sampleA="GFP_striatum", sampleB="KI_striatum",
+                          result_table)
+result_table = merge(result_table, cts,by="row.names",all.x=TRUE)
+result_table <- result_table[order(result_table$logFC),]
+
+#result_table$logFC = -1 * result_table$logFC
+
+write.table(result_table, file='GFP_striatum_vs_KI_striatum.GLM.edgeR.DE_results', 
+            sep='\t', quote=F, row.names=T, col.names = NA)
+
+```
+
+GFP_cortex_vs_KI_cortex
+
+```{r}
+#GFP_cortex_vs_KI_cortex
+qlf <- glmQLFTest(fit, contrast=my.contrasts[,"GFP_cortex_vs_KI_cortex"]) 
+
+tTags = topTags(qlf,n=NULL)
+
+result_table = tTags$table
+
+result_table = data.frame(sampleA="GFP_cortex", sampleB="KI_cortex", 
+                          result_table)
+result_table = merge(result_table, cts,by="row.names",all.x=TRUE)
+result_table <- result_table[order(result_table$logFC),]
+
+#result_table$logFC = -1 * result_table$logFC
+
+write.table(result_table, file='GFP_cortex_vs_KI_cortex.GLM.edgeR.DE_results', 
+            sep='\t', quote=F, row.names=T,col.names = NA)
+
+```
+
+
+GFP_Cortex_vs_KI_auditory_Cortex
+
+```{r}
+#GFP_Cortex_vs_KI_auditory_Cortex
+
+qlf <- glmQLFTest(fit, contrast=my.contrasts[,"GFP_Cortex_vs_KI_auditory_Cortex"])
+
+tTags = topTags(qlf,n=NULL)
+
+result_table = tTags$table
+
+result_table = data.frame(sampleA="GFP_cortex", sampleB="KI_cortex", 
+                          result_table)
+result_table = merge(result_table, cts,by="row.names",all.x=TRUE)
+result_table <- result_table[order(result_table$logFC),]
+
+#result_table$logFC = -1 * result_table$logFC
+
+write.table(result_table, file='GFP_Cortex_vs_KI_auditory_Cortex.GLM.edgeR.DE_results',
+            sep='\t', quote=F, row.names=T, col.names = NA)
+
+```
+
+
+GFP_Cortex_vs_GFP_Striatum
+
+```{r}
+qlf <- glmQLFTest(fit, contrast=my.contrasts[,"GFP_Cortex_vs_GFP_Striatum"])
+
+tTags = topTags(qlf,n=NULL)
+
+result_table = tTags$table
+
+result_table = data.frame(sampleA="GFP_cortex", sampleB="GFP_Striatum", 
+                          result_table)
+result_table = merge(result_table, cts,by="row.names",all.x=TRUE)
+result_table <- result_table[order(result_table$logFC),]
+
+#result_table$logFC = -1 * result_table$logFC
+
+write.table(result_table, file='GFP_Cortex_vs_GFP_Striatum.GLM.edgeR.DE_results',
+            sep='\t', quote=F, row.names=T, col.names = NA)
+
+```
+
+
+
+KI_striatum_vs_all_GFP_samples: GFP samples / 2 means we are comparing to the average expression of those GFP samples
+
+```{r}
+
+my.contrasts <- makeContrasts(KI_striatum_vs_all_GFP_samples= conditionKI_Striatum - 
+                                (conditionGFP_Cortex - conditionGFP_Striatum)/2,  
+                              levels=design)
+
+                                
+                                
+
+qlf <- glmQLFTest(fit, contrast=my.contrasts[,"KI_striatum_vs_all_GFP_samples"])
+
+tTags = topTags(qlf,n=NULL)
+
+result_table = tTags$table
+
+
+result_table = data.frame(sampleA="KI_striatum", sampleB="GFP_ALL",
+                          result_table)
+result_table = merge(result_table, cts,by="row.names",all.x=TRUE)
+result_table <- result_table[order(result_table$logFC),]
+
+
+write.table(result_table, file='KI_striatum_vs_average_GFP_samples.GLM.edgeR.DE_results',
+            sep='\t', quote=F, row.names=T, col.names = NA)
+
+```
+
+
+KI_striatum_vs_all_GFP_samples: GFP samples, this is simply vs all the GPF samples. 
+
+
+```{r}
+
+my.contrasts <- makeContrasts(KI_striatum_vs_all_GFP_samples= conditionKI_Striatum -
+                                (conditionGFP_Cortex - conditionGFP_Striatum),  
+                              levels=design)
+
+                                
+```
+
+
+
+```{r}
+qlf <- glmQLFTest(fit, contrast=my.contrasts[,"KI_striatum_vs_all_GFP_samples"])
+
+tTags = topTags(qlf,n=NULL)
+
+result_table = tTags$table
+
+
+result_table = data.frame(sampleA="KI_striatum", sampleB="GFP_ALL", result_table)
+result_table = merge(result_table, cts,by="row.names",all.x=TRUE)
+result_table <- result_table[order(result_table$logFC),]
+
+
+write.table(result_table, file='KI_striatum_vs_all_GFP_samples.GLM.edgeR.DE_results',
+            sep='\t', quote=F, row.names=T, col.names = NA)
+```

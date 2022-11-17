@@ -1,0 +1,260 @@
+---
+title: "HLphyDis3 DE gene analysis: reannotated Ewan and Paolo 01 Oct 2021, A_vs_B_GLM_with_animal_as_batch drop KI rep 3"
+author: "Peter Thorpe"
+date: "01 Oct 2021"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(comment = NA)
+error = TRUE
+
+```
+
+#0.1 QC! 
+
+see Word document. There is a collection of graphs from multiple sources, how the counts were created 
+
+##load the libs needed 
+
+
+```{r}
+
+library(tidyverse)
+library(DESeq2) # not used, yet(?)
+library(plotly)
+library(ggplot2)
+library(tidyverse)
+library(ggrepel)
+library(htmlwidgets)
+library(edgeR)
+library(tibble)
+library(data.table)
+
+```
+
+
+#0.2 load the data
+
+NOTE: replicate 2 removed for GFP_Striatum and KI_Striatum -  previously 
+shown not to worked. 
+
+counts were already generated using salmon and counts.matrix generated using trinity. 
+
+```{r}
+setwd("C:/Users/pjt6/Documents/bat_RNAseq/updated_annotation_01oct2021/A_vs_B_GLM_with_animal_as_batch/drop_rep3")
+
+cts <- read.delim("HLphyDis3.GFP_Striatum_vs_KI_Striatum.count_matrix", 
+                  header=T, row.names=1)
+
+coldata = read.table("metadata_2.txt", header=T, com='', 
+                      sep="\t", check.names=F, row.names=1)
+
+
+```
+
+
+have a quick look at the data:
+
+```{r}
+head(cts)
+
+```
+
+```{r}
+head(coldata)
+```
+
+
+convert to factors
+
+```{r}
+
+coldata <- coldata[,c("condition", "animal", "side","Age_of_bat", "reps")]
+coldata$condition <- factor(coldata$condition)
+coldata$animal <- factor(coldata$animal)
+coldata$side <- factor(coldata$side)
+coldata$Age_of_bat <- factor(coldata$Age_of_bat)
+coldata$reps <- factor(coldata$reps)
+animal <- factor(coldata$animal)
+condition <- factor(coldata$condition)
+
+```
+
+check that the order of the table and the colomns in the counts.matrix march, if not, then fix:
+
+```{r}
+
+all(rownames(coldata) %in% colnames(cts))
+# TRUE
+
+rownames(coldata) <-  rownames(coldata)
+
+all(rownames(coldata) == colnames(cts))
+# FALSE
+
+cts <- cts[, rownames(coldata)]
+
+all(rownames(coldata) == colnames(cts))
+# TRUE
+cts <- cts[, rownames(coldata)]
+all(rownames(coldata) == colnames(cts))
+
+```
+
+
+explicitly set up the replicates order. This matches the order in the counts.matrix 
+and in the sample.table
+
+```{r}
+# this is not actually used
+replicates = c(1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 1)
+
+```
+
+
+explicitly set up the group (yes, this is contained in the table!)
+
+```{r}
+group=c('GFP_Striatum', 'GFP_Striatum', 'GFP_Striatum', 
+        'KI_Striatum', 'KI_Striatum')
+
+```
+
+
+#0.3 R Packages now to start using edgeR to do some analysis: https://bioconductor.org/packages/release/bioc/vignettes/edgeR/inst/doc/edgeR.pdf
+
+
+```{r}
+y <- DGEList(counts=cts, group=group)
+
+condition<-coldata$condition # just so I dont have to keep using dollars :)
+
+```
+
+
+filter low expressing genes. Stats perfomred in a larger number, when lots are zero to low expressing negatively impacts on the data. 5,640 genes dropped from the analysis. 
+
+```{r}
+keep <- filterByExpr(y)
+
+table(keep)
+
+```
+
+calculate nomrlaisation factors and normalise the data for lib depth differences
+
+```{r}
+
+y <- y[keep, , keep.lib.sizes=FALSE]
+#The TMM normalization is applied to account for the compositional biases:
+y <- calcNormFactors(y)
+
+y$samples
+
+```
+
+
+following this https://support.bioconductor.org/p/56637/ with a problem with y, see the fix at the webpage. Reasign to d:
+
+```{r}
+
+d <- DGEList(counts=y,group=group)
+
+keep <- filterByExpr(d)
+
+table(keep)
+
+d <- d[keep, , keep.lib.sizes=FALSE]
+
+d <- calcNormFactors(d)
+
+plotMDS(d)
+
+```
+
+
+Before we fit GLMs, we need to define our design matrix based on the experimental design. 
+We want to test for differential expressions between our conditions within batches, i.e. adjusting for differences between batches. In statistical terms,
+this is an additive linear model. So the design matrix is created as:
+
+```{r}
+
+design <- model.matrix(~0 + condition + animal)
+
+
+
+```
+
+
+```{r}
+
+rownames(design) <- colnames(d)
+
+
+```
+
+
+```{r}
+
+design
+
+```
+
+
+run the DE analysis:
+
+```{r}
+
+d <- estimateDisp(d, design)
+
+# this GLM is better for low numbers of reps.
+ fit <- glmQLFit(d, design)
+ 
+ 
+ plotQLDisp(fit)
+
+ 
+ 
+```
+
+
+#0.4 specific comparisons
+To do the specific comparisons: GFP_Cortex_vs_GFP_Striatum.
+Coefficient:  (Intercept) groupGFP_Cortex groupGFP_Striatum groupKI_auditory_Cortex groupKI_Cortex groupKI_Striatum 
+
+```{r}
+
+my.contrasts <- makeContrasts(GFP_striatum_vs_KI_striatum = conditionGFP_Striatum - conditionKI_Striatum,
+                                levels=design)
+
+
+```
+
+get the pair wise comparisons. 
+
+GFP_striatum_vs_KI_striatum
+
+
+```{r}
+# GFP_striatum_vs_KI_striatum
+
+qlf <- glmQLFTest(fit, contrast=my.contrasts[,"GFP_striatum_vs_KI_striatum"]) 
+
+tTags = topTags(qlf,n=NULL)
+
+result_table = tTags$table
+
+result_table = data.frame(sampleA="GFP_striatum", sampleB="KI_striatum",
+                          result_table)
+result_table = merge(result_table, cts,by="row.names",all.x=TRUE)
+result_table <- result_table[order(result_table$logFC),]
+
+
+write.table(result_table, file='GFP_striatum_vs_KI_striatum.GLM.edgeR.DE_results', 
+            sep='\t', quote=F, row.names=T, col.names = NA)
+
+```
+
